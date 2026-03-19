@@ -222,9 +222,9 @@
                             <i class="fas fa-history text-yellow-400 mr-2"></i> 역(曆) 계산 원칙
                         </h4>
                         <ul class="text-xs text-slate-300 leading-relaxed space-y-2 list-disc pl-4">
-                            <li>한 달을 채우지 못한 단수 일수는 시작일을 포함한 실제 근무 일수를 그대로 산정합니다.</li>
-                            <li>민법 제160조에 따라 역에 의하여 계산하며, 월 단위가 완성되지 않은 일수는 그대로 둡니다.</li>
-                            <li><b>특이사항:</b> 1, 3, 5, 7, 8, 10, 12월(31일인 달)에 30일간 근무한 경우에만 29일로 인정됩니다. (그 외 일수는 실제 일수 인정)</li>
+                            <li>민법 제160조(역에 의한 계산)에 따라 년, 월을 먼저 산출하고 남은 일수를 합산합니다.</li>
+                            <li><b>특수 규칙:</b> 31일까지 있는 달(1, 3, 5, 7, 8, 10, 12월)에 <b>정확히 30일</b>을 근무한 경우에만 29일로 인정됩니다.</li>
+                            <li>그 외의 모든 일수(1~29일, 31일 전체 등)는 실제 경과 일수를 그대로 인정합니다.</li>
                             <li>환산율 적용 시 1년=360일, 1월=30일로 계산합니다.</li>
                         </ul>
                     </div>
@@ -256,10 +256,7 @@
             const curY = now.getFullYear();
             const curM = now.getMonth() + 1;
             const curD = now.getDate();
-            
-            // 임용일 디폴트 값: 2026년 1월 1일
             initDateSelect('sY', 'sM', 'sD', 2026, 1, 1);
-            // 퇴직일 디폴트 값: 현재 날짜
             initDateSelect('eY', 'eM', 'eD', curY, curM, curD);
         };
 
@@ -303,8 +300,8 @@
         }
 
         /**
-         * 민법 제160조 '역에 의한 계산' 로직 개선
-         * 요청사항: 31일인 달(1,3,5,7,8,10,12월)에 30일 근무 시에만 29일로 인정.
+         * 민법 제160조 '역에 의한 계산' 로직
+         * 특정 조건: 1,3,5,7,8,10,12월의 경우 '30일 근무' 시에만 29일로 보정
          */
         function getDiffYMD(startDate, endDate) {
             let start = new Date(startDate);
@@ -320,14 +317,14 @@
 
             // 1. 년 단위 계산
             while (true) {
-                let checkYear = new Date(tempDate);
-                checkYear.setFullYear(checkYear.getFullYear() + 1);
-                let expireDate = new Date(checkYear);
+                let nextYear = new Date(tempDate);
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                let expireDate = new Date(nextYear);
                 expireDate.setDate(expireDate.getDate() - 1);
                 
                 if (expireDate <= end) {
                     years++;
-                    tempDate = checkYear;
+                    tempDate = nextYear;
                 } else {
                     break;
                 }
@@ -335,35 +332,35 @@
 
             // 2. 월 단위 계산
             while (true) {
-                let checkMonth = new Date(tempDate);
-                checkMonth.setMonth(checkMonth.getMonth() + 1);
-                let expireDate = new Date(checkMonth);
+                let nextMonth = new Date(tempDate);
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                let expireDate = new Date(nextMonth);
                 expireDate.setDate(expireDate.getDate() - 1);
                 
                 if (expireDate <= end) {
                     months++;
-                    tempDate = checkMonth;
+                    tempDate = nextMonth;
                 } else {
                     break;
                 }
             }
 
-            // 3. 일 단위 계산 (남은 기간이 1개월 미만일 때)
+            // 3. 일 단위 계산 (남은 자투리 기간)
             let diffTime = end.getTime() - tempDate.getTime();
             let actualDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
             
-            // 특정 조건 처리: 31일인 달에 30일 근무 시 29일로 인정
-            // tempDate가 속한 월의 마지막 날짜 확인
-            let lastDayOfM = new Date(tempDate.getFullYear(), tempDate.getMonth() + 1, 0).getDate();
-            let monthLabel = tempDate.getMonth() + 1;
+            // 31일인 달(대월) 목록
             const longMonths = [1, 3, 5, 7, 8, 10, 12];
-
-            if (longMonths.includes(monthLabel) && lastDayOfM === 31 && actualDays === 30) {
+            let currentMonth = tempDate.getMonth() + 1; // 현재 계산 중인 월
+            
+            // 조건: 대월이고, 실제 근무 일수가 정확히 30일인 경우에만 29일로 보정
+            if (longMonths.includes(currentMonth) && actualDays === 30) {
                 days = 29;
             } else {
                 days = actualDays;
             }
             
+            // 만약 보정 후 days가 0이 되는 경우는 없으므로 그대로 반환
             return { years, months, days };
         }
 
