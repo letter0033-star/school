@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교육공무원 역에 의한 경력 환산기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            background: #f8fafc;
+            font-family: 'Pretendard', sans-serif;
+            color: #334155;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .premium-card {
+            background: white;
+            border-radius: 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+
+        .select-custom {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.2em;
+        }
+
+        .badge-rate {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .result-box {
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+        }
+
+        .btn-add {
+            background: #fb923c; 
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add:hover {
+            background: #f97316; 
+            transform: translateY(-1px);
+        }
+
+        .btn-excel {
+            background: #107c41; 
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .btn-excel:hover {
+            background: #0d6334;
+            transform: translateY(-1px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="py-8 px-4 md:py-12">
+    <div class="main-container">
+        <div class="flex items-center space-x-4 mb-10 pl-2">
+            <div class="w-14 h-14 header-gradient rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shrink-0">
+                <i class="fas fa-university"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">교육공무원 역에 의한 경력 환산기</h1>
+                <div class="flex items-center space-x-2 mt-1">
+                    <p class="text-slate-500 font-medium">2026 인사실무편람 호봉 획정 및 경력환산율표 기반</p>
+                    <span class="text-slate-300">|</span>
+                    <p class="text-slate-400 text-xs font-normal">2026 강릉시 유·초등 교(원)감 협의회 v1.1</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-7 space-y-6">
+                <div class="premium-card p-6 md:p-8">
+                    <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
+                        <i class="fas fa-edit mr-2 text-blue-600"></i> 경력 사항 입력
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 gap-4">
+                            <label class="text-sm font-bold text-slate-700">경력 종류 선택</label>
+                            <select id="careerType" class="select-custom w-full p-4 border-2 border-slate-100 rounded-xl focus:border-blue-500 focus:ring-0 outline-none transition-all text-slate-800 font-medium bg-slate-50">
+                                <optgroup label="교원 경력 (100%)">
+                                    <option value="1">국·공·사립 학교 교원 (100%)</option>
+                                    <option value="1">교육행정직 및 기술직 공무원 (100%)</option>
+                                    <option value="1">기간제 교원 (100%)</option>
+                                </optgroup>
+                                <optgroup label="교직유사 경력 (환산율 적용)">
+                                    <option value="1">군 의무복무 경력 (100%)</option>
+                                    <option value="0.8">대학 강사 및 보조교사 (80%)</option>
+                                    <option value="0.5">교육기관 기타 임시직 (50%)</option>
+                                </optgroup>
+                                <optgroup label="일반직유사 및 기타">
+                                    <option value="0.4">민간 기업체 전문분야 경력 (40%)</option>
+                                    <option value="0.3">기타 일반직 유사 경력 (30%)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-3">임용일 (시작일)</label>
+                                <div class="flex space-x-2">
+                                    <select id="sY" class="select-custom flex-1 p-3 bg-white border border-slate-200 rounded-lg text-sm"></select>
+                                    <select id="sM" class="select-custom w-20 p-3 bg-white border border-slate-200 rounded-lg text-sm"></select>
+                                    <select id="sD" class="select-custom w-20 p-3 bg-white border border-slate-200 rounded-lg text-sm"></select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-3">퇴직일 (종료일)</label>
+                                <div class="flex space-x-2">
+                                    <select id="eY" class="select-custom flex-1 p-3 bg-white border border-slate-200 rounded-lg text-sm"></select>
+                                    <select id="eM" class="select-custom w-20 p-3 bg-white border border-slate-200 rounded-lg text-sm"></select>
+                                    <select id="eD" class="select-custom w-20 p-3 bg-white border border-slate-200 rounded-lg text-sm"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="addEntry()" class="w-full btn-add font-bold py-4 rounded-xl shadow-lg flex items-center justify-center space-x-2">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>경력 리스트에 추가하기</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="premium-card p-6 md:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-800">합산 대상 목록</h3>
+                        <div class="flex space-x-2">
+                            <button id="btnDownload" onclick="downloadExcel()" class="hidden btn-excel text-[11px] font-bold py-2 px-3 rounded-lg shadow-sm flex items-center">
+                                <i class="fas fa-file-excel mr-1.5"></i> 엑셀 저장
+                            </button>
+                            <button onclick="clearAll()" class="text-xs font-bold text-red-400 hover:text-red-600 uppercase tracking-tighter transition-colors">
+                                <i class="fas fa-trash-alt mr-1"></i> 전체 초기화
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="careerList" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                        <div class="text-center py-12 border-2 border-dashed border-slate-100 rounded-2xl">
+                            <div class="text-slate-300 text-4xl mb-3"><i class="fas fa-folder-open"></i></div>
+                            <p class="text-slate-400 text-sm font-medium">추가된 경력 내역이 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5">
+                <div class="sticky top-8 space-y-6">
+                    <div class="premium-card">
+                        <div class="header-gradient p-6 text-white text-center">
+                            <h3 class="text-sm font-bold opacity-80 uppercase tracking-widest mb-1">최종 합산 결과</h3>
+                            <p class="text-xs opacity-60">민법 제160조 '역에 의한 계산' 적용</p>
+                        </div>
+                        
+                        <div class="p-8">
+                            <div class="flex justify-center items-center space-x-1 mb-8">
+                                <div class="text-center flex items-baseline">
+                                    <span id="totalY" class="text-5xl font-black text-slate-900">0</span>
+                                    <span class="text-xl font-bold text-slate-800 ml-1">년</span>
+                                </div>
+                                <div class="text-center flex items-baseline ml-2">
+                                    <span id="totalM" class="text-5xl font-black text-slate-900">0</span>
+                                    <span class="text-xl font-bold text-slate-800 ml-1">월</span>
+                                </div>
+                                <div class="text-center flex items-baseline ml-2">
+                                    <span id="totalD" class="text-5xl font-black text-slate-900">0</span>
+                                    <span class="text-xl font-bold text-slate-800 ml-1">일</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="p-4 result-box bg-blue-50/50 border-blue-100">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-[10px] font-bold text-blue-500 uppercase">최종 산출 근거</span>
+                                    </div>
+                                    <p id="calcBasis" class="text-xs text-slate-600 font-medium">등록된 경력이 없습니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-slate-800 rounded-2xl text-white shadow-xl">
+                        <h4 class="font-bold text-sm mb-3 flex items-center">
+                            <i class="fas fa-history text-yellow-400 mr-2"></i> 역(曆) 계산 원칙
+                        </h4>
+                        <ul class="text-xs text-slate-300 leading-relaxed space-y-2 list-disc pl-4">
+                            <li>한 달을 채우지 못한 단수 일수는 시작일을 포함한 실제 근무 일수를 그대로 산정합니다.</li>
+                            <li>민법 제160조에 따라 역에 의하여 계산하며, 월 단위가 완성되지 않은 일수는 그대로 둡니다.</li>
+                            <li>31일인 달의 30일 근무 시 1개월 미만이므로 실제 일수인 30일(시작일 포함)이 아닌 29일로 계산되는 규칙 등을 정확히 적용합니다.</li>
+                            <li>환산율 적용 시 1년=360일, 1월=30일로 계산합니다.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-16 text-center text-slate-400 text-xs pb-10">
+            <p>© 2026 교육공무원 인사관리 지원 도구 | 민법 제160조 역에 의한 계산 원칙 준수</p>
+        </footer>
+    </div>
+
+    <div id="confirmModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <h4 class="text-lg font-bold text-slate-900 mb-2">전체 초기화</h4>
+            <p class="text-slate-500 text-sm mb-6">추가된 모든 경력 내역이 삭제됩니다. 정말 초기화하시겠습니까?</p>
+            <div class="flex space-x-3">
+                <button onclick="closeModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">취소</button>
+                <button onclick="doClearAll()" class="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-200">초기화 실행</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let careerHistory = [];
+
+        window.onload = function() {
+            const now = new Date();
+            const curY = now.getFullYear();
+            const curM = now.getMonth() + 1;
+            const curD = now.getDate();
+            
+            // 임용일 디폴트 값: 2026년 1월 1일
+            initDateSelect('sY', 'sM', 'sD', 2026, 1, 1);
+            // 퇴직일 디폴트 값: 현재 날짜
+            initDateSelect('eY', 'eM', 'eD', curY, curM, curD);
+        };
+
+        function initDateSelect(yId, mId, dId, dy, dm, dd) {
+            const ySel = document.getElementById(yId);
+            const mSel = document.getElementById(mId);
+            const dSel = document.getElementById(dId);
+            const baseYear = 2026;
+            
+            ySel.innerHTML = "";
+            for(let i = baseYear + 5; i >= 1960; i--) { ySel.add(new Option(i + '년', i)); }
+            
+            mSel.innerHTML = "";
+            for(let i = 1; i <= 12; i++) { mSel.add(new Option(i + '월', i)); }
+            
+            ySel.value = dy;
+            mSel.value = dm;
+            
+            const updateDays = () => {
+                const year = parseInt(ySel.value);
+                const month = parseInt(mSel.value);
+                const lastDay = new Date(year, month, 0).getDate();
+                const curVal = parseInt(dSel.value);
+                
+                dSel.innerHTML = "";
+                for(let i = 1; i <= lastDay; i++) { dSel.add(new Option(i + '일', i)); }
+                
+                if (dd && dd <= lastDay) { 
+                    dSel.value = dd; 
+                    dd = null; 
+                } else if (curVal && curVal <= lastDay) { 
+                    dSel.value = curVal; 
+                } else { 
+                    dSel.value = 1; 
+                }
+            };
+            
+            ySel.onchange = updateDays;
+            mSel.onchange = updateDays;
+            updateDays();
+        }
+
+        /**
+         * 민법 제160조 '역에 의한 계산' 로직 개선
+         * 1개월을 채우지 못한 단수 일수를 정확하게 보존하도록 수정
+         */
+        function getDiffYMD(startDate, endDate) {
+            let start = new Date(startDate);
+            let end = new Date(endDate);
+            
+            if (start > end) return { years: 0, months: 0, days: 0 };
+
+            let years = 0;
+            let months = 0;
+            let days = 0;
+
+            let tempDate = new Date(start);
+
+            // 1. 년 단위 계산
+            while (true) {
+                let checkYear = new Date(tempDate);
+                checkYear.setFullYear(checkYear.getFullYear() + 1);
+                // 만료일은 다음 년도 해당일의 전날 (역에 의한 계산 원칙)
+                let expireDate = new Date(checkYear);
+                expireDate.setDate(expireDate.getDate() - 1);
+                
+                if (expireDate <= end) {
+                    years++;
+                    tempDate = checkYear;
+                } else {
+                    break;
+                }
+            }
+
+            // 2. 월 단위 계산
+            while (true) {
+                let checkMonth = new Date(tempDate);
+                checkMonth.setMonth(checkMonth.getMonth() + 1);
+                // 만료일은 다음 달 해당일의 전날
+                let expireDate = new Date(checkMonth);
+                expireDate.setDate(expireDate.getDate() - 1);
+                
+                if (expireDate <= end) {
+                    months++;
+                    tempDate = checkMonth;
+                } else {
+                    break;
+                }
+            }
+
+            // 3. 일 단위 계산 (남은 기간이 1개월 미만일 때)
+            // 시작일(tempDate)과 종료일(end) 사이의 일수를 계산 (시작일 포함)
+            // 예: 3/1 ~ 3/29 근무 시, 29-1 = 28일 차이가 나지만 실제 근무는 29일임
+            let diffTime = end.getTime() - tempDate.getTime();
+            days = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            // 만약 일수가 30일 이상이면 (월을 넘겼는데 특정 상황에서 월로 산입 안된 경우 방어 로직)
+            // 그러나 역 계산법에서는 31일이 있는 달의 30일 근무는 29일로 남아야 하므로 강제 변환 금지
+            
+            return { years, months, days };
+        }
+
+        function addEntry() {
+            const careerSelect = document.getElementById('careerType');
+            const typeName = careerSelect.options[careerSelect.selectedIndex].text;
+            const rate = parseFloat(careerSelect.value);
+            const start = new Date(document.getElementById('sY').value, document.getElementById('sM').value - 1, document.getElementById('sD').value);
+            const end = new Date(document.getElementById('eY').value, document.getElementById('eM').value - 1, document.getElementById('eD').value);
+            
+            if (start > end) return;
+
+            const diff = getDiffYMD(start, end);
+            const entry = {
+                id: Date.now(),
+                name: typeName,
+                start: start,
+                end: end,
+                rate: rate,
+                y: diff.years,
+                m: diff.months,
+                d: diff.days
+            };
+            careerHistory.push(entry);
+            renderList();
+            calculateTotal();
+        }
+
+        function removeEntry(id) {
+            careerHistory = careerHistory.filter(e => e.id !== id);
+            renderList();
+            calculateTotal();
+        }
+
+        function clearAll() {
+            if (careerHistory.length === 0) return;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('confirmModal').classList.add('hidden'); }
+
+        function doClearAll() {
+            careerHistory = [];
+            renderList();
+            calculateTotal();
+            closeModal();
+        }
+
+        function formatDisplay(y, m, d) {
+            let parts = [];
+            if (y > 0) parts.push(`${y}년`);
+            if (m > 0) parts.push(`${m}월`);
+            if (d > 0 || (y === 0 && m === 0)) parts.push(`${d}일`);
+            return parts.join(' ');
+        }
+
+        function renderList() {
+            const list = document.getElementById('careerList');
+            const btnDownload = document.getElementById('btnDownload');
+            if (careerHistory.length === 0) {
+                list.innerHTML = `<div class="text-center py-12 border-2 border-dashed border-slate-100 rounded-2xl"><p class="text-slate-400 text-sm font-medium">추가된 경력 내역이 없습니다.</p></div>`;
+                btnDownload.classList.add('hidden');
+                return;
+            }
+            btnDownload.classList.remove('hidden');
+            list.innerHTML = careerHistory.map(e => {
+                let displayStr = formatDisplay(e.y, e.m, e.d);
+                return `
+                <div class="group flex justify-between items-center p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-bold text-slate-700">${e.name}</span>
+                            <span class="badge-rate">${Math.round(e.rate*100)}%</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-1 font-mono">${e.start.toLocaleDateString()} ~ ${e.end.toLocaleDateString()}</div>
+                    </div>
+                    <div class="text-right px-4 border-r border-slate-100 mr-4">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">인정 기간</p>
+                        <p class="text-sm font-extrabold text-blue-600 leading-none">${displayStr}</p>
+                    </div>
+                    <button onclick="removeEntry(${e.id})" class="p-2 text-slate-300 hover:text-red-500 transition-colors"><i class="fas fa-trash-alt"></i></button>
+                </div>`;
+            }).reverse().join('');
+        }
+
+        function calculateTotal() {
+            let totalY = 0, totalM = 0, totalD = 0;
+            careerHistory.forEach(e => {
+                if (e.rate === 1) {
+                    totalY += e.y; totalM += e.m; totalD += e.d;
+                } else {
+                    // 환산율 적용 시 1년=360일, 1월=30일 계산법 준수
+                    let totalDaysInEntry = (e.y * 360) + (e.m * 30) + e.d;
+                    let weightedDays = Math.floor(totalDaysInEntry * e.rate);
+                    totalY += Math.floor(weightedDays / 360);
+                    totalM += Math.floor((weightedDays % 360) / 30);
+                    totalD += weightedDays % 30;
+                }
+            });
+            
+            // 최종 합계 보정
+            totalM += Math.floor(totalD / 30);
+            totalD = totalD % 30;
+            totalY += Math.floor(totalM / 12);
+            totalM = totalM % 12;
+
+            document.getElementById('totalY').innerText = totalY;
+            document.getElementById('totalM').innerText = totalM;
+            document.getElementById('totalD').innerText = totalD;
+            document.getElementById('calcBasis').innerText = careerHistory.length > 0 ? `총 ${careerHistory.length}건 합산 결과: ${totalY}년 ${totalM}월 ${totalD}일` : "등록된 경력이 없습니다.";
+        }
+
+        function downloadExcel() {
+            if (careerHistory.length === 0) return;
+            const data = careerHistory.map((e, index) => ({
+                "순번": index + 1,
+                "경력종류": e.name,
+                "시작일": e.start.toLocaleDateString(),
+                "종료일": e.end.toLocaleDateString(),
+                "환산율": `${Math.round(e.rate * 100)}%`,
+                "인정기간": formatDisplay(e.y, e.m, e.d)
+            }));
+            data.push({ "순번": "합계", "인정기간": `${document.getElementById('totalY').innerText}년 ${document.getElementById('totalM').innerText}월 ${document.getElementById('totalD').innerText}일` });
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "경력합산결과");
+            XLSX.writeFile(workbook, `경력합산_결과.xlsx`);
+        }
+    </script>
+</body>
+</html>
