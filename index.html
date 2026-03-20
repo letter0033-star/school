@@ -165,6 +165,7 @@
             const eY = end.getFullYear(), eM = end.getMonth(), eD = end.getDate();
             const eLast = isLastDayOfMonth(end);
             
+            // 종료일이 말일이고 시작일의 날짜가 종료일보다 큰 경우 (역에 의한 계산 특수 케이스)
             if (eLast && sD > eD && (eM === (sM + 1) % 12 || (eY > sY && eM === 0 && sM === 11))) {
                  return { y: 0, m: 1, d: 0 };
             }
@@ -183,6 +184,7 @@
                 months += 12;
             }
 
+            // 시작일과 종료일이 모두 말일인 경우 보정
             if (isLastDayOfMonth(start) && isLastDayOfMonth(end) && days > 0) {
                 if (days >= new Date(eY, eM, 0).getDate() - 2) {
                     months++;
