@@ -18,8 +18,6 @@
         /* 버튼 컬러 커스텀 */
         .btn-orange { background-color: #f97316; } /* Orange 500 */
         .btn-orange:hover { background-color: #ea580c; } /* Orange 600 */
-        .btn-emerald { background-color: #10b981; } /* Emerald 500 */
-        .btn-emerald:hover { background-color: #059669; } /* Emerald 600 */
     </style>
 </head>
 <body class="py-8 px-4 md:py-12">
@@ -78,12 +76,9 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                            <button onclick="addEntry(false)" class="flex-1 btn-orange text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center">
-                                <i class="fas fa-plus mr-2"></i> 경력 추가
-                            </button>
-                            <button onclick="addEntry(true)" class="flex-1 btn-emerald text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center">
-                                <i class="fas fa-minus mr-2"></i> 제외 기간(차감)
+                        <div class="pt-2">
+                            <button onclick="addEntry(false)" class="w-full btn-orange text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center text-lg">
+                                <i class="fas fa-plus-circle mr-2"></i> 경력 추가하기
                             </button>
                         </div>
                     </div>
