@@ -128,8 +128,12 @@
         let history = [];
 
         window.onload = () => {
-            initSelect('sY', 'sM', 'sD', 2025, 1, 29);
-            initSelect('eY', 'eM', 'eD', 2025, 2, 28);
+            // 시작일 디폴트: 2026년 1월 1일
+            initSelect('sY', 'sM', 'sD', 2026, 1, 1);
+            
+            // 종료일 디폴트: 현재 날짜
+            const today = new Date();
+            initSelect('eY', 'eM', 'eD', today.getFullYear(), today.getMonth() + 1, today.getDate());
         };
 
         function initSelect(yId, mId, dId, dy, dm, dd) {
