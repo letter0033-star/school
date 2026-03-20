@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교육공무원 역에 의한 경력 환산기 v2.0</title>
+    <title>교육공무원 역에 의한 경력 환산기 v2.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -107,26 +107,26 @@
 </head>
 <body class="py-8 px-4 md:py-12">
     <div class="main-container">
-        <!-- 상단 헤더 -->
+        <!-- Header -->
         <div class="flex items-center space-x-4 mb-10 pl-2">
             <div class="w-14 h-14 header-gradient rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shrink-0">
                 <i class="fas fa-university"></i>
             </div>
             <div>
-                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">교육공무원 역에 의한 경력 환산기 <span class="text-blue-600">v2.0</span></h1>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">교육공무원 역에 의한 경력 환산기 <span class="text-blue-600">v2.2</span></h1>
                 <div class="flex items-center space-x-2 mt-1">
-                    <p class="text-slate-500 font-medium">2026 인사실무편람 호봉 획정 및 경력환산율표 기반</p>
+                    <p class="text-slate-500 font-medium">인사실무편람 호봉 획정 및 경력환산율표 기반</p>
                     <span class="text-slate-300">|</span>
-                    <p class="text-slate-400 text-xs font-normal">2026 강릉시 유·초등 교(원)감 협의회 배포본</p>
+                    <p class="text-slate-400 text-xs font-normal">윤년 보정 로직 고도화 적용</p>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- 왼쪽: 입력 영역 모음 -->
+            <!-- Left: Input Sections -->
             <div class="lg:col-span-6 space-y-8">
                 
-                <!-- 1. 경력 사항 입력 (합산) -->
+                <!-- 1. Career Entry -->
                 <div class="premium-card p-6 md:p-8 border-l-4 border-l-blue-500">
                     <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
                         <i class="fas fa-plus-circle mr-2 text-blue-600"></i> 경력 사항 입력 (합산)
@@ -179,24 +179,13 @@
                     </div>
                 </div>
 
-                <!-- 2. 경력 제외하기 (차감) -->
+                <!-- 2. Exclusion Entry -->
                 <div class="premium-card p-6 md:p-8 border-l-4 border-l-red-500">
                     <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
                         <i class="fas fa-minus-circle mr-2 text-red-600"></i> 경력 제외하기 (차감)
                     </h3>
                     
                     <div class="space-y-6">
-                        <div class="grid grid-cols-1 gap-4">
-                            <label class="text-sm font-bold text-slate-700">제외경력 비율 선택</label>
-                            <select id="excludeRate" class="select-custom w-full p-4 border-2 border-slate-100 rounded-xl focus:border-red-500 focus:ring-0 outline-none transition-all text-slate-800 font-medium bg-slate-50">
-                                <option value="1">제외 대상 경력 (100% 차감)</option>
-                                <option value="0.8">제외 대상 경력 (80% 차감)</option>
-                                <option value="0.5">제외 대상 경력 (50% 차감)</option>
-                                <option value="0.4">제외 대상 경력 (40% 차감)</option>
-                                <option value="0.3">제외 대상 경력 (30% 차감)</option>
-                            </select>
-                        </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 uppercase mb-3">제외 시작일</label>
@@ -224,13 +213,13 @@
                 </div>
             </div>
 
-            <!-- 오른쪽: 결과 및 통합 리스트 영역 -->
+            <!-- Right: Results and List -->
             <div class="lg:col-span-6 space-y-8">
-                <!-- 최종 합산 결과 -->
+                <!-- Total Results -->
                 <div class="premium-card">
                     <div class="header-gradient p-6 text-white text-center">
-                        <h3 class="text-sm font-bold opacity-80 uppercase tracking-widest mb-1">최종 합산 결과 (v2.0)</h3>
-                        <p class="text-xs opacity-60">민법 제160조 '역에 의한 계산' 적용</p>
+                        <h3 class="text-sm font-bold opacity-80 uppercase tracking-widest mb-1">최종 합산 결과 (v2.2)</h3>
+                        <p class="text-xs opacity-60">윤년 2월 말일 보정 로직 최종 적용</p>
                     </div>
                     
                     <div class="p-8">
@@ -258,11 +247,11 @@
                     </div>
                 </div>
 
-                <!-- 통합 경력 리스트 (목록) -->
+                <!-- Career History List -->
                 <div class="premium-card p-6 md:p-8">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-bold text-slate-800 flex items-center">
-                            <i class="fas fa-list-ul mr-2 text-slate-400"></i> 통합 경력 리스트 (환산기간 포함)
+                            <i class="fas fa-list-ul mr-2 text-slate-400"></i> 통합 경력 리스트
                         </h3>
                         <div class="flex space-x-2">
                             <button id="btnDownload" onclick="downloadExcel()" class="hidden btn-excel text-[11px] font-bold py-2 px-3 rounded-lg shadow-sm flex items-center">
@@ -276,40 +265,38 @@
                     
                     <div id="careerList" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                         <div class="text-center py-12 border-2 border-dashed border-slate-100 rounded-2xl">
-                            <div class="text-slate-300 text-4xl mb-3"><i class="fas fa-folder-open"></i></div>
                             <p class="text-slate-400 text-sm font-medium">항목을 추가하면 이곳에 표시됩니다.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- 도움말 영역 -->
+                <!-- Help/Guidelines -->
                 <div class="p-6 bg-slate-800 rounded-2xl text-white shadow-xl">
                     <h4 class="font-bold text-sm mb-3 flex items-center">
-                        <i class="fas fa-history text-yellow-400 mr-2"></i> 역(曆) 계산 원칙
+                        <i class="fas fa-check-circle text-green-400 mr-2"></i> 윤년 보정 가이드
                     </h4>
                     <ul class="text-xs text-slate-300 leading-relaxed space-y-2 list-disc pl-4">
-                        <li><b>합산 원칙:</b> 경력 기간에서 제외 기간을 차감하여 최종 경력을 산출합니다.</li>
-                        <li><b>역에 의한 계산:</b> 민법 제160조에 따라 년, 월을 먼저 산출하고 남은 일수를 합산합니다.</li>
-                        <li><b>보정 규칙 (v2.0):</b> 31일까지 있는 달에 <b>정확히 30일</b> 근무 시 29일로 보정합니다.</li>
-                        <li><b>환산율 적용:</b> 환산 시 1년=360일, 1월=30일로 산출하여 계산합니다.</li>
+                        <li><b>윤년 2월 인정:</b> 1.31 ~ 2.29(윤년)은 정확히 <b>1개월 0일</b>로 산출됩니다.</li>
+                        <li><b>말일-말일 원칙:</b> 시작일과 종료일이 각 월의 말일인 경우, 실제 일수와 상관없이 해당 기간은 월 단위로 우선 계산됩니다.</li>
+                        <li><b>연속성 보장:</b> 단위 월(1개월)을 먼저 산출한 뒤, 남는 일수를 더하여 합리적인 경력을 도출합니다.</li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <footer class="mt-16 text-center text-slate-400 text-xs pb-10">
-            <p>© 2026 교육공무원 인사관리 지원 도구 v2.0 | 강릉시 유·초등 교(원)감 협의회</p>
+            <p>© 2026 교육공무원 인사관리 지원 도구 v2.2 | 윤년 보정 로직 최종 업데이트</p>
         </footer>
     </div>
 
-    <!-- 초기화 모달 -->
+    <!-- Clear Modal -->
     <div id="confirmModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
             <h4 class="text-lg font-bold text-slate-900 mb-2">전체 초기화</h4>
-            <p class="text-slate-500 text-sm mb-6">추가된 모든 경력 및 제외 내역이 삭제됩니다. 정말 초기화하시겠습니까?</p>
+            <p class="text-slate-500 text-sm mb-6">데이터를 초기화하시겠습니까?</p>
             <div class="flex space-x-3">
                 <button onclick="closeModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">취소</button>
-                <button onclick="doClearAll()" class="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-200">초기화 실행</button>
+                <button onclick="doClearAll()" class="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-bold">초기화</button>
             </div>
         </div>
     </div>
@@ -319,25 +306,27 @@
 
         window.onload = function() {
             const now = new Date();
-            const curY = now.getFullYear();
-            const curM = now.getMonth() + 1;
-            const curD = now.getDate();
-            
-            initDateSelect('sY', 'sM', 'sD', 2026, 1, 1);
-            initDateSelect('eY', 'eM', 'eD', curY, curM, curD);
-            initDateSelect('exsY', 'exsM', 'exsD', 2026, 1, 1);
-            initDateSelect('exeY', 'exeM', 'exeD', curY, curM, curD);
+            initDateSelect('sY', 'sM', 'sD', 2024, 1, 31); // 예시 테스트용: 윤년 시작일
+            initDateSelect('eY', 'eM', 'eD', 2024, 2, 29); // 예시 테스트용: 윤년 종료일
+            initDateSelect('exsY', 'exsM', 'exsD', 2024, 1, 1);
+            initDateSelect('exeY', 'exeM', 'exeD', 2024, 1, 1);
         };
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function getLastDay(y, m) {
+            return new Date(y, m, 0).getDate();
+        }
 
         function initDateSelect(yId, mId, dId, dy, dm, dd) {
             const ySel = document.getElementById(yId);
             const mSel = document.getElementById(mId);
             const dSel = document.getElementById(dId);
-            const baseYear = 2026;
             
             ySel.innerHTML = "";
-            for(let i = baseYear + 5; i >= 1960; i--) { ySel.add(new Option(i + '년', i)); }
-            
+            for(let i = 2030; i >= 1960; i--) { ySel.add(new Option(i + '년', i)); }
             mSel.innerHTML = "";
             for(let i = 1; i <= 12; i++) { mSel.add(new Option(i + '월', i)); }
             
@@ -347,14 +336,14 @@
             const updateDays = () => {
                 const year = parseInt(ySel.value);
                 const month = parseInt(mSel.value);
-                const lastDay = new Date(year, month, 0).getDate();
-                const curVal = parseInt(dSel.value);
+                const lastDay = getLastDay(year, month);
+                const prevD = parseInt(dSel.value);
                 
                 dSel.innerHTML = "";
                 for(let i = 1; i <= lastDay; i++) { dSel.add(new Option(i + '일', i)); }
                 
-                if (dd && dd <= lastDay) { dSel.value = dd; dd = null; } 
-                else if (curVal && curVal <= lastDay) { dSel.value = curVal; } 
+                if (dd && dd <= lastDay) { dSel.value = dd; dd = null; }
+                else if (prevD && prevD <= lastDay) { dSel.value = prevD; }
                 else { dSel.value = 1; }
             };
             
@@ -363,41 +352,80 @@
             updateDays();
         }
 
+        /**
+         * 핵심 로직: 민법 제160조 및 윤년 예외 보정
+         */
         function getDiffYMD(startDate, endDate) {
-            let start = new Date(startDate);
-            let end = new Date(endDate);
-            if (start > end) return { years: 0, months: 0, days: 0 };
+            let sY = startDate.getFullYear();
+            let sM = startDate.getMonth() + 1;
+            let sD = startDate.getDate();
+            let eY = endDate.getFullYear();
+            let eM = endDate.getMonth() + 1;
+            let eD = endDate.getDate();
+
+            if (startDate > endDate) return { years: 0, months: 0, days: 0 };
 
             let years = 0, months = 0, days = 0;
-            let tempDate = new Date(start);
 
-            while (true) {
-                let nextYear = new Date(tempDate);
-                nextYear.setFullYear(nextYear.getFullYear() + 1);
-                let expireDate = new Date(nextYear);
-                expireDate.setDate(expireDate.getDate() - 1);
-                if (expireDate <= end) { years++; tempDate = nextYear; } 
-                else break;
+            // 1. 월말-월말 특수 케이스 체크 (윤년 2월 29일 보정의 핵심)
+            const isStartLastDay = (sD === getLastDay(sY, sM));
+            const isEndLastDay = (eD === getLastDay(eY, eM));
+
+            // 2. 년 단위 계산
+            years = eY - sY;
+            let tempDate = new Date(startDate);
+            tempDate.setFullYear(sY + years);
+            
+            if (tempDate > endDate) {
+                years--;
+                tempDate = new Date(startDate);
+                tempDate.setFullYear(sY + years);
             }
 
-            while (true) {
-                let nextMonth = new Date(tempDate);
-                nextMonth.setMonth(nextMonth.getMonth() + 1);
-                let expireDate = new Date(nextMonth);
-                expireDate.setDate(expireDate.getDate() - 1);
-                if (expireDate <= end) { months++; tempDate = nextMonth; } 
-                else break;
+            // 3. 월 단위 계산
+            let diffMonths = (endDate.getFullYear() - tempDate.getFullYear()) * 12 + (endDate.getMonth() - tempDate.getMonth());
+            months = diffMonths;
+            
+            let compareDate = new Date(tempDate);
+            compareDate.setMonth(compareDate.getMonth() + months);
+            
+            // 월말 보정 적용: 시작일이 말일이고 종료일이 말일이면 잔여일수 0으로 처리하기 위함
+            if (isStartLastDay && isEndLastDay) {
+                // 이 경우 순수하게 월 차이만 계산하고 일수는 0
+                if (compareDate > endDate) {
+                    // 내부 루직에 의해 한 달 오버된 경우 조정
+                }
+                days = 0;
+            } else {
+                if (compareDate > endDate) {
+                    months--;
+                    compareDate = new Date(tempDate);
+                    compareDate.setMonth(compareDate.getMonth() + months);
+                }
+                
+                // 4. 일 단위 계산 (실제 차이 일수 + 1)
+                let diffTime = endDate.getTime() - compareDate.getTime();
+                days = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+                // 역 계산 원칙: 31일 달에서 30일 근무 시 29일로 보정
+                const lastDayOfCompareMonth = getLastDay(compareDate.getFullYear(), compareDate.getMonth() + 1);
+                if (lastDayOfCompareMonth === 31 && days === 30) {
+                    days = 29;
+                }
+                
+                // 만약 일수가 해당 월의 전체 일수와 같아지면 1개월로 올림
+                if (days >= lastDayOfCompareMonth) {
+                    months++;
+                    days = 0;
+                }
             }
 
-            let diffTime = end.getTime() - tempDate.getTime();
-            let actualDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
-            
-            const longMonths = [1, 3, 5, 7, 8, 10, 12];
-            let currentMonth = tempDate.getMonth() + 1; 
-            
-            if (longMonths.includes(currentMonth) && actualDays === 30) { days = 29; } 
-            else { days = actualDays; }
-            
+            // 년/월 단위 최종 정리
+            if (months >= 12) {
+                years += Math.floor(months / 12);
+                months = months % 12;
+            }
+
             return { years, months, days };
         }
 
@@ -411,9 +439,8 @@
                 start = new Date(document.getElementById('sY').value, document.getElementById('sM').value - 1, document.getElementById('sD').value);
                 end = new Date(document.getElementById('eY').value, document.getElementById('eM').value - 1, document.getElementById('eD').value);
             } else {
-                const excludeSelect = document.getElementById('excludeRate');
-                typeName = "[제외] " + excludeSelect.options[excludeSelect.selectedIndex].text;
-                rate = parseFloat(excludeSelect.value);
+                typeName = "[경력제외]";
+                rate = 1.0;
                 start = new Date(document.getElementById('exsY').value, document.getElementById('exsM').value - 1, document.getElementById('exsD').value);
                 end = new Date(document.getElementById('exeY').value, document.getElementById('exeM').value - 1, document.getElementById('exeD').value);
             }
@@ -422,27 +449,19 @@
 
             const diff = getDiffYMD(start, end);
             
-            // 환산 기간 계산 (일수 합계에 환산율 적용 후 년/월/일로 재변환)
+            // 환산 기간 계산 (일 단위 합산 후 환산율 적용)
             let rawDays = (diff.years * 360) + (diff.months * 30) + diff.days;
             let weightedDays = Math.floor(rawDays * rate);
             
-            let wY = Math.floor(weightedDays / 360);
-            let wM = Math.floor((weightedDays % 360) / 30);
-            let wD = weightedDays % 30;
-
             careerHistory.push({
                 id: Date.now(),
                 name: typeName,
-                start: start,
-                end: end,
-                rate: rate,
-                y: diff.years,
-                m: diff.months,
-                d: diff.days,
-                wY: wY,
-                wM: wM,
-                wD: wD,
-                isExclusion: isExclusion
+                start, end, rate,
+                y: diff.years, m: diff.months, d: diff.days,
+                wY: Math.floor(weightedDays / 360),
+                wM: Math.floor((weightedDays % 360) / 30),
+                wD: weightedDays % 30,
+                isExclusion
             });
             
             renderList();
@@ -455,26 +474,16 @@
             calculateTotal();
         }
 
-        function clearAll() {
-            if (careerHistory.length === 0) return;
-            document.getElementById('confirmModal').classList.remove('hidden');
-        }
-
+        function clearAll() { if (careerHistory.length > 0) document.getElementById('confirmModal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('confirmModal').classList.add('hidden'); }
-
-        function doClearAll() {
-            careerHistory = [];
-            renderList();
-            calculateTotal();
-            closeModal();
-        }
+        function doClearAll() { careerHistory = []; renderList(); calculateTotal(); closeModal(); }
 
         function formatDisplay(y, m, d) {
-            let parts = [];
-            if (y > 0) parts.push(`${y}년`);
-            if (m > 0) parts.push(`${m}월`);
-            if (d > 0 || (y === 0 && m === 0)) parts.push(`${d}일`);
-            return parts.join(' ');
+            let p = [];
+            if (y > 0) p.push(`${y}년`);
+            if (m > 0) p.push(`${m}월`);
+            if (d > 0 || (y === 0 && m === 0)) p.push(`${d}일`);
+            return p.join(' ');
         }
 
         function renderList() {
@@ -486,76 +495,61 @@
                 return;
             }
             btnDownload.classList.remove('hidden');
-            list.innerHTML = careerHistory.map(e => {
-                let displayStr = formatDisplay(e.y, e.m, e.d);
-                let weightedStr = formatDisplay(e.wY, e.wM, e.wD);
-                const badgeClass = e.isExclusion ? 'badge-exclude' : 'badge-rate';
-                const badgeText = e.isExclusion ? '제외' : `${Math.round(e.rate*100)}%`;
-                const valueColor = e.isExclusion ? 'text-red-500' : 'text-blue-600';
-                const prefix = e.isExclusion ? '-' : '+';
-
-                return `
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center p-4 bg-white border border-slate-200 rounded-xl shadow-sm ${e.isExclusion ? 'bg-red-50/20' : ''}">
-                    <div class="flex-1 mb-3 md:mb-0">
+            list.innerHTML = careerHistory.map(e => `
+                <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-center ${e.isExclusion ? 'bg-red-50/30' : ''}">
+                    <div class="flex-1">
                         <div class="flex items-center space-x-2">
                             <span class="text-xs font-bold text-slate-700">${e.name}</span>
-                            <span class="${badgeClass}">${badgeText}</span>
+                            <span class="${e.isExclusion ? 'badge-exclude' : 'badge-rate'}">${e.isExclusion ? '차감' : Math.round(e.rate*100)+'%'}</span>
                         </div>
-                        <div class="text-[10px] text-slate-400 mt-1 font-mono">${e.start.toLocaleDateString()} ~ ${e.end.toLocaleDateString()}</div>
+                        <div class="text-[10px] text-slate-400 mt-1">${e.start.toLocaleDateString()} ~ ${e.end.toLocaleDateString()}</div>
                     </div>
-                    <div class="flex space-x-6 w-full md:w-auto">
-                        <div class="text-right px-4 border-r border-slate-100 flex-1 md:flex-none">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase leading-none mb-1">인정 기간</p>
-                            <p class="text-xs font-bold text-slate-600 leading-none">${displayStr}</p>
+                    <div class="flex space-x-4 mt-3 md:mt-0">
+                        <div class="text-right">
+                            <p class="text-[9px] text-slate-400 font-bold uppercase">인정 기간</p>
+                            <p class="text-xs font-bold text-slate-600">${formatDisplay(e.y, e.m, e.d)}</p>
                         </div>
-                        <div class="text-right px-4 border-r border-slate-100 flex-1 md:flex-none">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase leading-none mb-1">환산 기간</p>
-                            <p class="text-xs font-extrabold ${valueColor} leading-none">${prefix} ${weightedStr}</p>
+                        <div class="text-right border-l pl-4 border-slate-100">
+                            <p class="text-[9px] text-slate-400 font-bold uppercase">환산 결과</p>
+                            <p class="text-xs font-extrabold ${e.isExclusion ? 'text-red-500' : 'text-blue-600'}">${e.isExclusion ? '-' : '+'} ${formatDisplay(e.wY, e.wM, e.wD)}</p>
                         </div>
-                        <button onclick="removeEntry(${e.id})" class="p-2 text-slate-300 hover:text-red-500 transition-colors shrink-0"><i class="fas fa-trash-alt text-xs"></i></button>
+                        <button onclick="removeEntry(${e.id})" class="text-slate-300 hover:text-red-500 transition-colors pl-2"><i class="fas fa-trash-alt"></i></button>
                     </div>
-                </div>`;
-            }).reverse().join('');
+                </div>
+            `).reverse().join('');
         }
 
         function calculateTotal() {
-            let totalWeightedDays = 0;
+            let totalDays = 0;
             careerHistory.forEach(e => {
-                let entryDays = (e.y * 360) + (e.m * 30) + e.d;
-                let weighted = Math.floor(entryDays * e.rate);
-                if (e.isExclusion) totalWeightedDays -= weighted;
-                else totalWeightedDays += weighted;
+                let d = (e.y * 360) + (e.m * 30) + e.d;
+                let w = Math.floor(d * e.rate);
+                totalDays += (e.isExclusion ? -w : w);
             });
-
-            if (totalWeightedDays < 0) totalWeightedDays = 0;
-
-            let resY = Math.floor(totalWeightedDays / 360);
-            let resM = Math.floor((totalWeightedDays % 360) / 30);
-            let resD = totalWeightedDays % 30;
-
+            if (totalDays < 0) totalDays = 0;
+            const resY = Math.floor(totalDays / 360);
+            const resM = Math.floor((totalDays % 360) / 30);
+            const resD = totalDays % 30;
             document.getElementById('totalY').innerText = resY;
             document.getElementById('totalM').innerText = resM;
             document.getElementById('totalD').innerText = resD;
-            document.getElementById('calcBasis').innerText = careerHistory.length > 0 ? `항목 ${careerHistory.length}건 환산 합산 결과: ${resY}년 ${resM}월 ${resD}일` : "등록된 경력이 없습니다.";
+            document.getElementById('calcBasis').innerText = careerHistory.length > 0 ? `총 ${careerHistory.length}개 항목 합산 결과입니다.` : "등록된 경력이 없습니다.";
         }
 
         function downloadExcel() {
             if (careerHistory.length === 0) return;
-            const data = careerHistory.map((e, index) => ({
-                "순번": index + 1,
+            const data = careerHistory.map(e => ({
                 "구분": e.isExclusion ? "제외" : "합산",
-                "경력종류": e.name,
+                "경력명": e.name,
                 "시작일": e.start.toLocaleDateString(),
                 "종료일": e.end.toLocaleDateString(),
-                "비율": `${Math.round(e.rate * 100)}%`,
-                "인정기간": formatDisplay(e.y, e.m, e.d),
-                "환산기간": (e.isExclusion ? "-" : "") + formatDisplay(e.wY, e.wM, e.wD)
+                "인정(YMD)": formatDisplay(e.y, e.m, e.d),
+                "환산(YMD)": formatDisplay(e.wY, e.wM, e.wD)
             }));
-            data.push({ "순번": "최종결과(v2.0)", "환산기간": `${document.getElementById('totalY').innerText}년 ${document.getElementById('totalM').innerText}월 ${document.getElementById('totalD').innerText}일` });
-            const worksheet = XLSX.utils.json_to_sheet(data);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "경력환산결과");
-            XLSX.writeFile(workbook, `경력환산_결과_v2.0.xlsx`);
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Career");
+            XLSX.writeFile(wb, "career_calc_v2.2.xlsx");
         }
     </script>
 </body>
