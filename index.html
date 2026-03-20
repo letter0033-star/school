@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교육공무원 역에 의한 경력 환산기 v2.3</title>
+    <title>교육공무원 역에 의한 경력 환산기 v2.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -29,7 +29,7 @@
             </div>
             <div>
                 <div class="flex flex-col md:flex-row md:items-baseline md:space-x-3">
-                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">교육공무원 경력 환산기 <span class="text-blue-600 text-2xl">v2.3</span></h1>
+                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">교육공무원 경력 환산기 <span class="text-blue-600 text-2xl">v2.4</span></h1>
                     <span class="text-slate-400 text-sm font-semibold tracking-tight mt-1 md:mt-0">강릉시 유·초등 교(원)감단 협의회</span>
                 </div>
                 <p class="text-slate-500 font-medium">민법 제160조(역에 의한 계산) 및 인사실무지침 반영</p>
@@ -109,7 +109,7 @@
                     </div>
                     <div class="p-6">
                         <div class="result-box p-4 text-xs leading-relaxed text-slate-600">
-                            <p class="font-bold text-blue-600 mb-2 underline">역(曆)에 의한 계산 원칙 (v2.3 적용)</p>
+                            <p class="font-bold text-blue-600 mb-2 underline">역(曆)에 의한 계산 원칙 (v2.4 적용)</p>
                             <ul class="space-y-2 list-disc pl-4 text-[11px]">
                                 <li><strong>월말-월말 원칙:</strong> 종료일이 해당 월의 말일인 경우, 시작일이 말일이거나 그 이후인 경우 1개월로 인정합니다. (예: 1.31~2.28 = 1개월)</li>
                                 <li><strong>단위 기간 합산:</strong> 여러 가지 경력이 있는 경우에는 각 경력을 계급별로 구분한 후 경력 환산율별로 계산하여 각각 합산하며, 12월은 1년으로, 30일은 1월로 각각 계산한다.<br><span class="text-[10px] opacity-80">(2026 공무원보수 등의 업무지침 11쪽)</span></li>
@@ -285,7 +285,7 @@
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "CareerHistory");
-            XLSX.writeFile(wb, "career_v2.3_result.xlsx");
+            XLSX.writeFile(wb, "career_v2.4_result.xlsx");
         }
     </script>
 </body>
