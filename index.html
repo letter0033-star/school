@@ -110,10 +110,9 @@
                     <div class="p-6">
                         <div class="result-box p-4 text-xs leading-relaxed text-slate-600">
                             <p class="font-bold text-blue-600 mb-2 underline">역(曆)에 의한 계산 원칙 (v2.3 적용)</p>
-                            <ul class="space-y-1 list-disc pl-4">
-                                <li><strong>월말-월말 원칙:</strong> 종료일이 해당 월의 말일인 경우, 시작일이 말일이거나 그 이후인 경우 1개월로 인정합니다.</li>
-                                <li>(예: 1.31~2.28 = 1개월 / 1.30~2.28 = 1개월 / 1.29~2.28 = 1개월)</li>
-                                <li><strong>단위 기간 합산:</strong> 각 경력의 일수를 30일=1월, 12월=1년으로 환산하여 최종 합산합니다.</li>
+                            <ul class="space-y-2 list-disc pl-4 text-[11px]">
+                                <li><strong>월말-월말 원칙:</strong> 종료일이 해당 월의 말일인 경우, 시작일이 말일이거나 그 이후인 경우 1개월로 인정합니다. (예: 1.31~2.28 = 1개월)</li>
+                                <li><strong>단위 기간 합산:</strong> 여러 가지 경력이 있는 경우에는 각 경력을 계급별로 구분한 후 경력 환산율별로 계산하여 각각 합산하며, 12월은 1년으로, 30일은 1월로 각각 계산한다.<br><span class="text-[10px] opacity-80">(2026 공무원보수 등의 업무지침 11쪽)</span></li>
                             </ul>
                         </div>
                         <button onclick="downloadExcel()" class="w-full mt-4 py-3 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-900 transition-colors">
