@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교육공무원 역에 의한 경력 환산기 v3.4</title>
+    <title>교육공무원 역에 의한 경력 환산기 v3.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -34,7 +34,7 @@
                     <i class="fas fa-calculator"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 leading-tight">교육공무원 경력 환산기 <span class="text-blue-600">v3.4</span></h1>
+                    <h1 class="text-2xl font-extrabold text-slate-900 leading-tight">교육공무원 경력 환산기 <span class="text-blue-600">v3.5</span></h1>
                     <p class="text-slate-500 text-sm font-medium">강릉시 유·초등 교(원)감단 협의회</p>
                 </div>
             </div>
@@ -136,20 +136,36 @@
                     </div>
                     
                     <div class="p-6">
-                        <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100 mb-6">
+                        <!-- calculation Principles -->
+                        <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100 mb-4">
                             <h4 class="text-[11px] font-bold text-blue-700 mb-3 flex items-center">
-                                <i class="fas fa-check-double mr-1.5"></i> 계산 원칙 및 특수 처리 (v3.4)
+                                <i class="fas fa-check-double mr-1.5"></i> 계산 원칙 및 특수 처리 (v3.5)
                             </h4>
                             <ul class="text-[11px] text-slate-600 space-y-2.5 leading-relaxed">
                                 <li class="flex items-start">
                                     <span class="mr-2 text-blue-500 font-bold">1.</span>
-                                    <span><strong>단위 기간 합산 원칙</strong>: 각 경력을 계급별로 구분 후 환산율별로 계산하여 합산하며, <strong>12월은 1년으로, 30일은 1월로</strong> 계산한다.</span>
+                                    <span><strong>단위 기간 합산 원칙</strong>: 각 경력을 환산율별로 계산하여 합산하며, <strong>12월은 1년으로, 30일은 1월로</strong> 계산한다.</span>
                                 </li>
-                                <li class="flex items-start italic opacity-80">
-                                    <span class="mr-2 text-blue-400 font-bold">2.</span>
-                                    <span>역(曆)에 의한 계산 방식으로 31일 달의 31일 퇴직 시 1개월로 인정하는 등 특수 케이스를 반영합니다.</span>
+                                <li class="flex items-start">
+                                    <span class="mr-2 text-blue-500 font-bold">2.</span>
+                                    <span><strong>역(曆)에 의한 방법</strong>: 한 달의 1일부터 말일까지 근무하거나, 시작일이 말일이고 종료일이 다음 말일인 경우 <strong>정확히 1개월</strong>로 인정한다.</span>
                                 </li>
                             </ul>
+                        </div>
+
+                        <!-- Caution Section -->
+                        <div class="bg-orange-50/50 rounded-xl p-4 border border-orange-100 mb-6">
+                            <h4 class="text-[11px] font-bold text-orange-700 mb-2 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-1.5"></i> 유의사항
+                            </h4>
+                            <div class="text-[11px] text-orange-800 leading-relaxed font-medium space-y-2">
+                                <p>
+                                    경력 환산기는 제미나이3 버전의 바이브코딩으로 만들어졌으며, 모든 사례에 적용하기에는 계산이 완벽하지 않을 수 있음. 사용자는 반드시 입력한 경력의 결과값이 맞는지 검증이 필요함.
+                                </p>
+                                <p class="text-[10px] opacity-80 border-t border-orange-200 pt-2">
+                                    <i class="far fa-envelope mr-1"></i> 오류 문의: letter0033@gmail.com
+                                </p>
+                            </div>
                         </div>
 
                         <button onclick="downloadExcel()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-emerald-100 transition-all flex items-center justify-center">
@@ -166,7 +182,6 @@
     </div>
 
     <script>
-        // 전역 변수 초기화
         let history = [];
 
         window.onload = () => {
@@ -175,12 +190,10 @@
             const today = new Date();
             initSelect('eY', 'eM', 'eD', today.getFullYear(), today.getMonth() + 1, today.getDate());
             
-            // 삭제 버튼 이벤트 리스너 명시적 연결 (더 확실한 방법)
             const clearBtn = document.getElementById('btn-clear-all');
             if(clearBtn) {
                 clearBtn.addEventListener('click', clearAll);
             }
-            
             render(); 
         };
 
@@ -204,55 +217,64 @@
         }
 
         function isLastDayOfMonth(date) {
-            const d = new Date(date);
-            return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate() === d.getDate();
+            const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+            return d.getDate() === lastDay;
         }
 
         function calculateDiff(start, end) {
             if (start > end) return { y: 0, m: 0, d: 0 };
-            const sD = start.getDate();
-            const eY = end.getFullYear(), eM = end.getMonth(), eD = end.getDate();
-            const lastDayOfEndMonth = new Date(eY, eM + 1, 0).getDate();
 
-            if (lastDayOfEndMonth === 31) {
-                if (eD === 30) {
-                    const adjEnd = new Date(end);
-                    adjEnd.setDate(eD - 1);
-                    return calculateNormalDiff(start, adjEnd);
-                }
-                if (eD === 31 && sD === 1) return { y: 0, m: 1, d: 0 };
-            }
-            return calculateNormalDiff(start, end);
-        }
-
-        function calculateNormalDiff(start, end) {
             const sY = start.getFullYear(), sM = start.getMonth(), sD = start.getDate();
             const eY = end.getFullYear(), eM = end.getMonth(), eD = end.getDate();
 
-            if (isLastDayOfMonth(end) && sD > eD && (eM === (sM + 1) % 12 || (eY > sY && eM === 0 && sM === 11))) {
-                 return { y: 0, m: 1, d: 0 };
-            }
-
             let years = eY - sY;
             let months = eM - sM;
-            let days = eD - sD + 1;
+            let days = 0;
 
-            if (days < 0) {
-                months--;
-                days += new Date(eY, eM, 0).getDate();
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
+            const sLast = isLastDayOfMonth(start);
+            const eLast = isLastDayOfMonth(end);
 
-            if (isLastDayOfMonth(start) && isLastDayOfMonth(end) && days > 0) {
-                months++;
+            if ((sD === 1 && eLast) || (sLast && eLast)) {
                 days = 0;
+                months = (eY * 12 + eM) - (sY * 12 + sM) + 1;
+                if (sLast && eLast && sD !== 1) {
+                    months = (eY * 12 + eM) - (sY * 12 + sM);
+                }
+            } 
+            else {
+                months = eM - sM;
+                days = eD - sD + 1;
+
+                if (days < 0) {
+                    months--;
+                    const prevMonthLastDay = new Date(eY, eM, 0).getDate();
+                    days += prevMonthLastDay;
+                }
+                
+                const currentMonthTotalDays = new Date(eY, eM + 1, 0).getDate();
+                if (days >= currentMonthTotalDays) {
+                    months += 1;
+                    days = 0;
+                }
             }
-            
-            if (days >= 30) { months += Math.floor(days/30); days %= 30; }
-            if (months >= 12) { years += Math.floor(months/12); months %= 12; }
+
+            if (months < 0) {
+                years = Math.floor(months / 12);
+                months = (months % 12 + 12) % 12;
+            } else {
+                years = Math.floor(months / 12);
+                months = months % 12;
+            }
+
+            if (days >= 30) {
+                months += Math.floor(days / 30);
+                days %= 30;
+            }
+            if (months >= 12) {
+                years += Math.floor(months / 12);
+                months %= 12;
+            }
 
             return { y: years, m: months, d: days };
         }
@@ -319,7 +341,8 @@
                         </div>
                         <div class="text-[11px] text-slate-400 font-medium flex items-center">
                             <i class="far fa-calendar-alt mr-1"></i>
-                            ${item.start.toLocaleDateString()} — ${item.end.toLocaleDateString()}
+                            ${item.start.getFullYear()}.${String(item.start.getMonth()+1).padStart(2,'0')}.${String(item.start.getDate()).padStart(2,'0')} — 
+                            ${item.end.getFullYear()}.${String(item.end.getMonth()+1).padStart(2,'0')}.${String(item.end.getDate()).padStart(2,'0')}
                         </div>
                     </div>
                     
@@ -348,41 +371,19 @@
             render(); 
         }
 
-        // 목록 모두 삭제 기능 (개선된 버전)
         function clearAll() { 
             if(confirm("정말로 모든 데이터를 삭제하시겠습니까?")) { 
-                // 1. 메모리상의 배열을 확실히 비움
                 history = []; 
-                history.length = 0; 
-                
-                // 2. UI 표시 초기화
                 updateTotalDisplay(0, 0, 0);
-                
-                // 3. 목록 컨테이너 강제 초기화
-                const container = document.getElementById('listContainer');
-                if(container) {
-                    container.innerHTML = `
-                        <div class="h-full flex flex-col items-center justify-center text-slate-300 space-y-2">
-                            <i class="fas fa-clipboard-list text-4xl"></i>
-                            <p class="text-sm font-medium">데이터를 추가해 주세요.</p>
-                        </div>`;
-                }
-                
-                // 4. 배지 숫자 갱신
-                const countBadge = document.getElementById('countBadge');
-                if(countBadge) countBadge.innerText = "0";
-
+                render();
                 showToast("모든 목록이 삭제되었습니다.");
             } 
         }
 
         function updateTotalDisplay(y, m, d) {
-            const resY = document.getElementById('resY');
-            const resM = document.getElementById('resM');
-            const resD = document.getElementById('resD');
-            if(resY) resY.innerText = y;
-            if(resM) resM.innerText = m;
-            if(resD) resD.innerText = d;
+            document.getElementById('resY').innerText = y;
+            document.getElementById('resM').innerText = m;
+            document.getElementById('resD').innerText = d;
         }
 
         function downloadExcel() {
