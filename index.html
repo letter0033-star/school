@@ -347,13 +347,23 @@ function downloadExcel() {
         csvContent += `${index + 1},${c.startVal},${c.endVal},${c.ratioPercent},${c.y},${c.m},${c.d},${c.ry},${c.rm},${c.rd}\n`;
     });
 
-    // 합산 행 추가
+    // 합산 행 추가 - 화면의 최종 합산 방식과 동일하게 적용
     let tY = 0, tM = 0, tD = 0;
-    careers.forEach(c => { tY += c.ry; tM += c.rm; tD += c.rd; });
-    tM += Math.floor(tD / 30); tD %= 30;
-    tY += Math.floor(tM / 12); tM %= 12;
+    careers.forEach(c => { 
+        tY += c.ry; 
+        tM += c.rm; 
+        tD += c.rd; 
+    });
+    
+    // 잔여 일수 합산 후 30일마다 1개월로 환산
+    tM += Math.floor(tD / 30); 
+    tD %= 30;
+    
+    // 월 합산 후 12개월마다 1년으로 환산
+    tY += Math.floor(tM / 12); 
+    tM %= 12;
 
-    csvContent += `,,,,,최종합산,,,,\n`;
+    csvContent += `\n,,,,,최종합산,,,,\n`;
     csvContent += `,,,,,${tY}년 ${tM}월 ${tD}일,,,,\n`;
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
