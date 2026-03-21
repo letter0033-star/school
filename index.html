@@ -3,407 +3,433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교육공무원 역에 의한 경력 환산기 v3.5</title>
+    <title>교육공무원 역에 의한 경력 환산기 v3.7</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
-        body { background: #f8fafc; font-family: 'Pretendard', sans-serif; color: #1e293b; }
-        .premium-card { background: white; border-radius: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .header-gradient { background: linear-gradient(135deg, #0f172a 0%, #334155 100%); }
-        .result-gradient { background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); }
-        .select-custom { 
-            appearance: none; 
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
-            background-position: right 0.5rem center; 
-            background-repeat: no-repeat; 
-            background-size: 1.2em; 
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
+        .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .transition-all { transition: all 0.3s ease; }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.2em 1.2em;
+            padding-right: 2rem;
         }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        @media (min-width: 1024px) {
+            .sticky-side {
+                position: sticky;
+                top: 3rem;
+            }
+        }
+        /* 단위 텍스트 크기 및 간격 조절 */
+        .unit {
+            font-size: 0.45em;
+            margin-left: 0.25rem; /* 숫자와 단위 사이 간격 */
+            margin-right: 1.25rem; /* 단위와 다음 숫자 사이 간격 */
+            font-weight: 600;
+            color: #64748b; /* 연한 배경에 맞춰 차분한 슬레이트 그레이로 변경 */
+            vertical-align: middle;
+        }
+        /* 마지막 단위는 오른쪽 마진 제거 */
+        .unit:last-child {
+            margin-right: 0;
+        }
     </style>
 </head>
-<body class="py-6 px-4 md:py-10">
-    <div class="max-w-5xl mx-auto">
-        <!-- Header -->
-        <header class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 px-2">
-            <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 header-gradient rounded-xl flex items-center justify-center text-white text-xl shadow-md">
-                    <i class="fas fa-calculator"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 leading-tight">교육공무원 경력 환산기 <span class="text-blue-600">v3.5</span></h1>
-                    <p class="text-slate-500 text-sm font-medium">강릉시 유·초등 교(원)감단 협의회</p>
-                </div>
-            </div>
-            <div class="text-right hidden md:block">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none">Standard Compliance</span>
-                <p class="text-xs text-slate-500 mt-1 font-medium">2026 공무원보수 지침 반영</p>
-            </div>
-        </header>
+<body class="min-h-screen py-8 px-4 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Side: Input & List -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-gray-100">
+                    <header class="mb-8">
+                        <div class="inline-block bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-3">
+                            Career Calculator v3.7
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <!-- 계산기 아이콘 -->
+                            <div class="shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+                                        교육공무원 경력 환산기
+                                    </h1>
+                                    <p class="text-gray-400 text-sm font-bold tracking-tight">
+                                        강릉시 유·초등 교(원)감 협의회
+                                    </p>
+                                </div>
+                                <p class="text-gray-600 mt-2 text-sm font-medium">
+                                    환산율을 설정하고 시작 날짜와 종료 날짜를 넣으세요.
+                                </p>
+                            </div>
+                        </div>
+                    </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Left: Inputs -->
-            <div class="lg:col-span-7 space-y-6">
-                <div class="premium-card p-6 border-l-4 border-l-blue-600">
-                    <h3 class="text-base font-bold text-slate-800 mb-5 flex items-center">
-                        <i class="fas fa-edit mr-2 text-blue-600"></i> 경력 기간 입력
-                    </h3>
-                    
-                    <div class="space-y-5">
-                        <!-- Career Type -->
-                        <div>
-                            <label class="text-[11px] font-extrabold text-slate-400 mb-2 block uppercase tracking-wider">경력 항목 및 환산율</label>
-                            <select id="careerType" class="select-custom w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-                                <option value="1">교원 및 공무원 경력 (100%)</option>
-                                <option value="0.8">대학 강사/시간강사 (80%)</option>
-                                <option value="0.7">그 밖의 경력 (70%)</option>
-                                <option value="0.5">기타 임시직 경력 (50%)</option>
-                                <option value="0.4">민간 전문경력 (40%)</option>
-                                <option value="0.3">그 밖의 직업 (30%)</option>
+                    <!-- Input Group -->
+                    <div class="space-y-6 mb-10">
+                        <!-- Ratio Selection -->
+                        <div class="space-y-3">
+                            <label class="text-sm font-bold text-gray-700 ml-1 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>환산율 설정
+                            </label>
+                            <select id="ratio" class="w-full bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-green-500 p-3 transition-all text-gray-700 font-bold outline-none border text-sm">
+                                <option value="100">100% (정교사, 공무원 등)</option>
+                                <option value="90">90%</option>
+                                <option value="80">80% (기간제 교사 등)</option>
+                                <option value="70">70%</option>
+                                <option value="60">60%</option>
+                                <option value="50">50% (강사 등)</option>
+                                <option value="40">40%</option>
+                                <option value="30">30% (기타 민간 경력)</option>
                             </select>
                         </div>
 
-                        <!-- Date Inputs -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[11px] font-extrabold text-slate-400 mb-2 uppercase tracking-wider">시작일 (임용일)</label>
-                                <div class="flex space-x-1">
-                                    <select id="sY" class="select-custom flex-1 p-2.5 border border-slate-200 rounded-lg text-sm bg-white"></select>
-                                    <select id="sM" class="select-custom w-16 p-2.5 border border-slate-200 rounded-lg text-sm bg-white"></select>
-                                    <select id="sD" class="select-custom w-16 p-2.5 border border-slate-200 rounded-lg text-sm bg-white"></select>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Start Date -->
+                            <div class="space-y-3">
+                                <label class="text-sm font-bold text-gray-700 ml-1 flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>시작 날짜
+                                </label>
+                                <div class="grid grid-cols-3 gap-1.5">
+                                    <select id="sYear" onchange="updateDays('s')" class="bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 p-2.5 transition-all text-gray-700 font-medium outline-none border text-xs sm:text-sm"></select>
+                                    <select id="sMonth" onchange="updateDays('s')" class="bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 p-2.5 transition-all text-gray-700 font-medium outline-none border text-xs sm:text-sm"></select>
+                                    <select id="sDay" class="bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 p-2.5 transition-all text-gray-700 font-medium outline-none border text-xs sm:text-sm"></select>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-extrabold text-slate-400 mb-2 uppercase tracking-wider">종료일 (퇴직일)</label>
-                                <div class="flex space-x-1">
-                                    <select id="eY" class="select-custom flex-1 p-2.5 border border-slate-200 rounded-lg text-sm bg-white"></select>
-                                    <select id="eM" class="select-custom w-16 p-2.5 border border-slate-200 rounded-lg text-sm bg-white"></select>
-                                    <select id="eD" class="select-custom w-16 p-2.5 border border-slate-200 rounded-lg text-sm bg-white"></select>
+
+                            <!-- End Date -->
+                            <div class="space-y-3">
+                                <label class="text-sm font-bold text-gray-700 ml-1 flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-red-400 rounded-full"></span>종료 날짜
+                                </label>
+                                <div class="grid grid-cols-3 gap-1.5">
+                                    <select id="eYear" onchange="updateDays('e')" class="bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 p-2.5 transition-all text-gray-700 font-medium outline-none border text-xs sm:text-sm"></select>
+                                    <select id="eMonth" onchange="updateDays('e')" class="bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 p-2.5 transition-all text-gray-700 font-medium outline-none border text-xs sm:text-sm"></select>
+                                    <select id="eDay" class="bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 p-2.5 transition-all text-gray-700 font-medium outline-none border text-xs sm:text-sm"></select>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Add Button -->
-                        <div class="pt-2">
-                            <button onclick="addEntry()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-orange-100 transition-all flex items-center justify-center text-sm">
-                                <i class="fas fa-plus-circle mr-2"></i> 경력 목록에 추가하기
+                        <button onclick="addCareer()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 transform hover:scale-[1.01] active:scale-95 shadow-lg shadow-orange-100 mt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                            </svg>
+                            <span>경력 기간 추가</span>
+                        </button>
+                    </div>
+
+                    <!-- List Header -->
+                    <div class="flex items-center justify-between mb-4 px-2">
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-lg font-bold text-gray-800">추가된 목록</h2>
+                            <span id="listCount" class="text-xs font-medium text-gray-400">총 0건</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <!-- Excel Download Button -->
+                            <button id="downloadBtn" onclick="downloadExcel()" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1 opacity-0 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                엑셀 저장
+                            </button>
+                            <button id="clearAllBtn" onclick="clearAllCareers()" class="text-xs font-bold text-red-400 hover:text-red-600 transition-colors flex items-center gap-1 opacity-0 pointer-events-none">
+                                모두 삭제
                             </button>
                         </div>
                     </div>
-                </div>
 
-                <!-- History List -->
-                <div class="premium-card flex flex-col h-[520px]">
-                    <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
-                        <h3 class="font-bold text-slate-700 text-sm">입력된 경력 목록 <span id="countBadge" class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-600 rounded-md text-[10px]">0</span></h3>
-                        <button id="btn-clear-all" class="text-[11px] text-slate-400 font-bold hover:text-red-500 transition-colors">
-                            <i class="fas fa-trash-alt mr-1"></i> 목록 모두 삭제
-                        </button>
-                    </div>
-                    <div id="listContainer" class="flex-1 overflow-y-auto p-4 space-y-3">
-                        <div class="h-full flex flex-col items-center justify-center text-slate-300 space-y-2">
-                            <i class="fas fa-clipboard-list text-4xl"></i>
-                            <p class="text-sm font-medium">데이터를 추가해 주세요.</p>
-                        </div>
-                    </div>
+                    <div id="careerList" class="space-y-3"></div>
                 </div>
             </div>
 
-            <!-- Right: Results -->
-            <div class="lg:col-span-5 space-y-6">
-                <div class="premium-card overflow-hidden sticky top-6 shadow-2xl">
-                    <div class="result-gradient p-10 text-white">
-                        <h3 class="text-[26px] font-extrabold tracking-tight mb-8 text-center drop-shadow-sm border-b border-white/20 pb-4">
-                            최종 합산 경력
-                        </h3>
-                        <div class="flex justify-center items-baseline space-x-3">
-                            <div class="flex items-baseline">
-                                <span id="resY" class="text-7xl font-black leading-none tracking-tight">0</span>
-                                <span class="text-xl font-bold ml-1 opacity-90">년</span>
-                            </div>
-                            <div class="flex items-baseline">
-                                <span id="resM" class="text-7xl font-black leading-none tracking-tight">0</span>
-                                <span class="text-xl font-bold ml-1 opacity-90">월</span>
-                            </div>
-                            <div class="flex items-baseline">
-                                <span id="resD" class="text-7xl font-black leading-none tracking-tight">0</span>
-                                <span class="text-xl font-bold ml-1 opacity-90">일</span>
+            <!-- Right Side: Total Box & Info -->
+            <div class="lg:col-span-1">
+                <div class="sticky-side space-y-6">
+                    <!-- Total Result Card - 부드러운 연한 하늘색(bg-sky-50)으로 변경 -->
+                    <div class="bg-sky-50 rounded-3xl p-5 text-sky-900 border border-sky-100 shadow-sm relative overflow-hidden min-h-[175px] flex flex-col justify-center">
+                        <div class="relative z-10 text-center">
+                            <p class="text-sky-600/70 text-lg font-black uppercase tracking-widest mb-4">최종 합산 결과</p>
+                            <div id="totalResult" class="text-3xl sm:text-4xl font-black flex items-center justify-center flex-wrap leading-tight tracking-tighter text-sky-950">
+                                0<span class="unit">년</span>0<span class="unit">월</span>0<span class="unit">일</span>
                             </div>
                         </div>
+                        <!-- 장식용 배경 요소 (매우 연하게) -->
+                        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-sky-200/30 rounded-full"></div>
+                        <div class="absolute -left-2 -top-2 w-14 h-14 bg-sky-200/20 rounded-full"></div>
                     </div>
-                    
-                    <div class="p-6">
-                        <!-- calculation Principles -->
-                        <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100 mb-4">
-                            <h4 class="text-[11px] font-bold text-blue-700 mb-3 flex items-center">
-                                <i class="fas fa-check-double mr-1.5"></i> 계산 원칙 및 특수 처리 (v3.5)
-                            </h4>
-                            <ul class="text-[11px] text-slate-600 space-y-2.5 leading-relaxed">
-                                <li class="flex items-start">
-                                    <span class="mr-2 text-blue-500 font-bold">1.</span>
-                                    <span><strong>단위 기간 합산 원칙</strong>: 각 경력을 환산율별로 계산하여 합산하며, <strong>12월은 1년으로, 30일은 1월로</strong> 계산한다.</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2 text-blue-500 font-bold">2.</span>
-                                    <span><strong>역(曆)에 의한 방법</strong>: 한 달의 1일부터 말일까지 근무하거나, 시작일이 말일이고 종료일이 다음 말일인 경우 <strong>정확히 1개월</strong>로 인정한다.</span>
-                                </li>
-                            </ul>
-                        </div>
 
-                        <!-- Caution Section -->
-                        <div class="bg-orange-50/50 rounded-xl p-4 border border-orange-100 mb-6">
-                            <h4 class="text-[11px] font-bold text-orange-700 mb-2 flex items-center">
-                                <i class="fas fa-exclamation-triangle mr-1.5"></i> 유의사항
-                            </h4>
-                            <div class="text-[11px] text-orange-800 leading-relaxed font-medium space-y-2">
-                                <p>
-                                    경력 환산기는 제미나이3 버전의 바이브코딩으로 만들어졌으며, 모든 사례에 적용하기에는 계산이 완벽하지 않을 수 있음. 사용자는 반드시 입력한 경력의 결과값이 맞는지 검증이 필요함.
-                                </p>
-                                <p class="text-[10px] opacity-80 border-t border-orange-200 pt-2">
-                                    <i class="far fa-envelope mr-1"></i> 오류 문의: letter0033@gmail.com
-                                </p>
+                    <!-- Footer Info -->
+                    <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-100 text-[11px] leading-relaxed text-gray-500">
+                        <div class="flex items-center gap-2 mb-3 text-gray-800 font-bold text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            계산 안내 사항
+                        </div>
+                        <ul class="space-y-2.5 list-none mb-6">
+                            <li><span class="text-blue-500 font-bold">1. 역(曆)에 의한 방법</span><br>민법 제160조를 준수하여 계산합니다.</li>
+                            <li><span class="text-green-500 font-bold">2. 환산율 적용</span><br>각 기간에 환산율을 곱한 뒤 소수점 이하의 일수는 버립니다.</li>
+                            <li><span class="text-orange-500 font-bold">3. 잔여 일수 합산</span><br>모든 환산 기간의 남은 일수를 합산한 뒤 30일마다 1개월로 환산합니다.</li>
+                        </ul>
+
+                        <div class="pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-2 mb-2 text-red-500 font-bold text-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                유의사항
+                            </div>
+                            <p class="mb-3 text-gray-400">
+                                경력 환산기는 <span class="text-gray-600 font-semibold">제미나이3</span>와 <span class="text-gray-600 font-semibold">ChatGPT5.3</span>의 바이브코딩으로 제작되었으며, 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다. 사용자는 반드시 입력한 경력의 결과 값이 맞는지 검증이 필요합니다.
+                            </p>
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-gray-700">오류 신고:</span>
+                                <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline decoration-blue-200">letter0033@gmail.com</a>
                             </div>
                         </div>
-
-                        <button onclick="downloadExcel()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-emerald-100 transition-all flex items-center justify-center">
-                            <i class="fas fa-download mr-2"></i> 엑셀 파일로 내보내기
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 bg-slate-900 text-white text-xs font-bold rounded-full shadow-2xl opacity-0 transition-all pointer-events-none z-50">
-        항목이 추가되었습니다.
-    </div>
+<script>
+let careers = [];
 
-    <script>
-        let history = [];
+window.onload = function() {
+    const currentYear = new Date().getFullYear();
+    const sYear = document.getElementById('sYear');
+    const eYear = document.getElementById('eYear');
+    const sMonth = document.getElementById('sMonth');
+    const eMonth = document.getElementById('eMonth');
 
-        window.onload = () => {
-            const currentYear = new Date().getFullYear();
-            initSelect('sY', 'sM', 'sD', currentYear, 1, 1);
-            const today = new Date();
-            initSelect('eY', 'eM', 'eD', today.getFullYear(), today.getMonth() + 1, today.getDate());
+    for (let i = currentYear + 10; i >= currentYear - 60; i--) {
+        const optS = new Option(`${i}년`, i);
+        const optE = new Option(`${i}년`, i);
+        if (i === currentYear) {
+            optS.selected = true;
+            optE.selected = true;
+        }
+        sYear.add(optS);
+        eYear.add(optE);
+    }
+
+    for (let i = 1; i <= 12; i++) {
+        const optS = new Option(`${i}월`, i);
+        const optE = new Option(`${i}월`, i);
+        sMonth.add(optS);
+        eMonth.add(optE);
+    }
+
+    updateDays('s');
+    updateDays('e');
+    updateUI(); 
+};
+
+function updateDays(prefix) {
+    const year = document.getElementById(prefix + 'Year').value;
+    const month = document.getElementById(prefix + 'Month').value;
+    const daySelect = document.getElementById(prefix + 'Day');
+    
+    const lastDay = new Date(year, month, 0).getDate();
+    const currentSelectedDay = daySelect.value;
+
+    daySelect.innerHTML = '';
+    for (let i = 1; i <= lastDay; i++) {
+        const opt = new Option(`${i}일`, i);
+        if (i == currentSelectedDay) opt.selected = true;
+        daySelect.add(opt);
+    }
+}
+
+function isLastDayOfMonth(date) {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    return d.getDate() === lastDay;
+}
+
+function calculateDiff(start, end, ratioPercent) {
+    if (start > end) return { y: 0, m: 0, d: 0, ry: 0, rm: 0, rd: 0 };
+    const sY = start.getFullYear(), sM = start.getMonth(), sD = start.getDate();
+    const eY = end.getFullYear(), eM = end.getMonth(), eD = end.getDate();
+
+    let years = 0, months = 0, days = 0;
+    const sLast = isLastDayOfMonth(start);
+    const eLast = isLastDayOfMonth(end);
+    const monthDiff = (eY * 12 + eM) - (sY * 12 + sM);
+
+    if (sD === 1 && eLast) {
+        months = monthDiff + 1;
+    } else if (sLast && eLast && monthDiff === 1) {
+        months = 1;
+    } else {
+        months = monthDiff;
+        days = eD - sD + 1;
+        if (days < 0) {
+            months--;
+            const prevMonthLastDay = new Date(eY, eM, 0).getDate();
+            days += prevMonthLastDay;
+        }
+        const currentMonthTotalDays = new Date(eY, eM + 1, 0).getDate();
+        if (currentMonthTotalDays === 31 && !(sLast && eLast)) {
+            if (days === 30) days = 29;
+        }
+        if (days >= currentMonthTotalDays) {
+            months += 1;
+            days = 0;
+        }
+    }
+
+    const ry = Math.floor(Math.floor(months * (ratioPercent / 100)) / 12);
+    const rm = Math.floor(months * (ratioPercent / 100)) % 12;
+    const rd = Math.floor(days * (ratioPercent / 100));
+
+    years = Math.floor(months / 12);
+    months = months % 12;
+
+    return { y: years, m: months, d: days, ry, rm, rd, ratioPercent };
+}
+
+function addCareer() {
+    const sY = document.getElementById('sYear').value;
+    const sM = document.getElementById('sMonth').value - 1;
+    const sD = document.getElementById('sDay').value;
+    const eY = document.getElementById('eYear').value;
+    const eM = document.getElementById('eMonth').value - 1;
+    const eD = document.getElementById('eDay').value;
+    const ratio = parseInt(document.getElementById('ratio').value);
+
+    const start = new Date(sY, sM, sD);
+    const end = new Date(eY, eM, eD);
+
+    if (start > end) {
+        alert("종료일이 시작일보다 빠를 수 없습니다.");
+        return;
+    }
+
+    const diff = calculateDiff(start, end, ratio);
+    const id = Date.now();
+    const startStr = `${sY}-${String(sM+1).padStart(2, '0')}-${String(sD).padStart(2, '0')}`;
+    const endStr = `${eY}-${String(eM+1).padStart(2, '0')}-${String(eD).padStart(2, '0')}`;
+
+    careers.push({ id, startVal: startStr, endVal: endStr, ...diff });
+    updateUI();
+}
+
+function removeCareer(id) {
+    careers = careers.filter(c => c.id !== id);
+    updateUI();
+}
+
+function clearAllCareers() {
+    careers = [];
+    updateUI();
+}
+
+// 엑셀 다운로드 기능 (CSV 형식)
+function downloadExcel() {
+    if (careers.length === 0) return;
+
+    let csvContent = "\uFEFF"; // UTF-8 BOM
+    csvContent += "순번,시작일,종료일,환산율(%),인정(년),인정(월),인정(일),환산(년),환산(월),환산(일)\n";
+
+    careers.forEach((c, index) => {
+        csvContent += `${index + 1},${c.startVal},${c.endVal},${c.ratioPercent},${c.y},${c.m},${c.d},${c.ry},${c.rm},${c.rd}\n`;
+    });
+
+    // 합산 행 추가
+    let tY = 0, tM = 0, tD = 0;
+    careers.forEach(c => { tY += c.ry; tM += c.rm; tD += c.rd; });
+    tM += Math.floor(tD / 30); tD %= 30;
+    tY += Math.floor(tM / 12); tM %= 12;
+
+    csvContent += `,,,,,최종합산,,,,\n`;
+    csvContent += `,,,,,${tY}년 ${tM}월 ${tD}일,,,,\n`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `경력환산결과_${dateStr}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function updateUI() {
+    const listContainer = document.getElementById('careerList');
+    const totalDisplay = document.getElementById('totalResult');
+    const listCount = document.getElementById('listCount');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    listContainer.innerHTML = '';
+    
+    if (careers.length === 0) {
+        clearAllBtn.classList.add('opacity-0', 'pointer-events-none');
+        downloadBtn.classList.add('opacity-0', 'pointer-events-none');
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = "text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100";
+        emptyDiv.innerHTML = '<p class="text-gray-400 text-sm italic">현재 등록된 경력이 없습니다.</p>';
+        listContainer.appendChild(emptyDiv);
+        totalDisplay.innerHTML = `0<span class="unit">년</span>0<span class="unit">월</span>0<span class="unit">일</span>`;
+        listCount.innerText = `총 0건`;
+    } else {
+        clearAllBtn.classList.remove('opacity-0', 'pointer-events-none');
+        downloadBtn.classList.remove('opacity-0', 'pointer-events-none');
+        
+        let tY = 0, tM = 0, tD = 0;
+        careers.forEach((c, index) => {
+            tY += c.ry; tM += c.rm; tD += c.rd;
             
-            const clearBtn = document.getElementById('btn-clear-all');
-            if(clearBtn) {
-                clearBtn.addEventListener('click', clearAll);
-            }
-            render(); 
-        };
-
-        function initSelect(yId, mId, dId, dy, dm, dd) {
-            const ys = document.getElementById(yId), ms = document.getElementById(mId), ds = document.getElementById(dId);
-            const baseYear = new Date().getFullYear();
-            for(let i = baseYear + 5; i >= 1970; i--) ys.add(new Option(i + '년', i));
-            for(let i=1; i<=12; i++) ms.add(new Option(i + '월', i));
-            ys.value = dy; ms.value = dm;
-
-            const updateDays = () => {
-                const last = new Date(ys.value, ms.value, 0).getDate();
-                const curVal = ds.value;
-                ds.innerHTML = "";
-                for(let i=1; i<=last; i++) ds.add(new Option(i + '일', i));
-                ds.value = dd || Math.min(curVal || 1, last);
-                dd = null;
-            };
-            ys.onchange = updateDays; ms.onchange = updateDays;
-            updateDays();
-        }
-
-        function isLastDayOfMonth(date) {
-            const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-            return d.getDate() === lastDay;
-        }
-
-        function calculateDiff(start, end) {
-            if (start > end) return { y: 0, m: 0, d: 0 };
-
-            const sY = start.getFullYear(), sM = start.getMonth(), sD = start.getDate();
-            const eY = end.getFullYear(), eM = end.getMonth(), eD = end.getDate();
-
-            let years = eY - sY;
-            let months = eM - sM;
-            let days = 0;
-
-            const sLast = isLastDayOfMonth(start);
-            const eLast = isLastDayOfMonth(end);
-
-            if ((sD === 1 && eLast) || (sLast && eLast)) {
-                days = 0;
-                months = (eY * 12 + eM) - (sY * 12 + sM) + 1;
-                if (sLast && eLast && sD !== 1) {
-                    months = (eY * 12 + eM) - (sY * 12 + sM);
-                }
-            } 
-            else {
-                months = eM - sM;
-                days = eD - sD + 1;
-
-                if (days < 0) {
-                    months--;
-                    const prevMonthLastDay = new Date(eY, eM, 0).getDate();
-                    days += prevMonthLastDay;
-                }
-                
-                const currentMonthTotalDays = new Date(eY, eM + 1, 0).getDate();
-                if (days >= currentMonthTotalDays) {
-                    months += 1;
-                    days = 0;
-                }
-            }
-
-            if (months < 0) {
-                years = Math.floor(months / 12);
-                months = (months % 12 + 12) % 12;
-            } else {
-                years = Math.floor(months / 12);
-                months = months % 12;
-            }
-
-            if (days >= 30) {
-                months += Math.floor(days / 30);
-                days %= 30;
-            }
-            if (months >= 12) {
-                years += Math.floor(months / 12);
-                months %= 12;
-            }
-
-            return { y: years, m: months, d: days };
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            if(!t) return;
-            t.innerText = msg;
-            t.style.opacity = '1';
-            setTimeout(() => { if(t) t.style.opacity = '0'; }, 2000);
-        }
-
-        function addEntry() {
-            const s = new Date(document.getElementById('sY').value, document.getElementById('sM').value - 1, document.getElementById('sD').value);
-            const e = new Date(document.getElementById('eY').value, document.getElementById('eM').value - 1, document.getElementById('eD').value);
-
-            if(s > e) { showToast("날짜 설정이 잘못되었습니다."); return; }
-
-            const diff = calculateDiff(s, e);
-            const rate = parseFloat(document.getElementById('careerType').value);
-            const typeText = document.getElementById('careerType').options[document.getElementById('careerType').selectedIndex].text;
-
-            const totalRawDays = (diff.y * 360) + (diff.m * 30) + diff.d;
-            const weightedDays = Math.floor(totalRawDays * rate);
-
-            history.push({
-                id: Date.now(),
-                name: typeText,
-                start: s, end: e,
-                y: diff.y, m: diff.m, d: diff.d,
-                wy: Math.floor(weightedDays / 360),
-                wm: Math.floor((weightedDays % 360) / 30),
-                wd: weightedDays % 30,
-                rate
-            });
-
-            showToast("목록에 추가되었습니다.");
-            render();
-        }
-
-        function render() {
-            const container = document.getElementById('listContainer');
-            const countBadge = document.getElementById('countBadge');
-            if(!container || !countBadge) return;
-            
-            countBadge.innerText = history.length;
-
-            if (!history || history.length === 0) {
-                container.innerHTML = `
-                    <div class="h-full flex flex-col items-center justify-center text-slate-300 space-y-2">
-                        <i class="fas fa-clipboard-list text-4xl"></i>
-                        <p class="text-sm font-medium">데이터를 추가해 주세요.</p>
-                    </div>`;
-                updateTotalDisplay(0, 0, 0);
-                return;
-            }
-
-            container.innerHTML = history.map(item => `
-                <div class="flex items-center justify-between p-4 border border-slate-100 rounded-xl bg-white shadow-sm hover:border-blue-200 transition-all">
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-2 mb-1.5">
-                            <span class="text-[10px] font-extrabold bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100 uppercase">${Math.round(item.rate*100)}% 적용</span>
-                            <span class="text-xs font-bold text-slate-700">${item.name}</span>
-                        </div>
-                        <div class="text-[11px] text-slate-400 font-medium flex items-center">
-                            <i class="far fa-calendar-alt mr-1"></i>
-                            ${item.start.getFullYear()}.${String(item.start.getMonth()+1).padStart(2,'0')}.${String(item.start.getDate()).padStart(2,'0')} — 
-                            ${item.end.getFullYear()}.${String(item.end.getMonth()+1).padStart(2,'0')}.${String(item.end.getDate()).padStart(2,'0')}
+            const div = document.createElement('div');
+            div.className = "flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all group border border-transparent hover:border-gray-200";
+            div.innerHTML = `
+                <div class="flex flex-col flex-grow min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">경력 ${index + 1}</span>
+                        <span class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-[9px] font-bold">환산율 ${c.ratioPercent}%</span>
+                    </div>
+                    <div class="flex items-center justify-between flex-wrap gap-y-2">
+                        <span class="text-xs font-semibold text-gray-500 whitespace-nowrap">${c.startVal} ~ ${c.endVal}</span>
+                        <div class="flex items-center gap-2 text-sm ml-auto">
+                            <div class="flex items-center gap-1.5 text-gray-500">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase">인정</span>
+                                <span class="text-xs font-medium">${c.y}년 ${c.m}월 ${c.d}일</span>
+                            </div>
+                            <span class="text-gray-300">|</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] font-bold text-blue-400 uppercase">환산</span>
+                                <span class="font-bold text-gray-900">${c.ry}년 ${c.rm}월 ${c.rd}일</span>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="flex items-center space-x-6 mr-4">
-                        <div class="text-right">
-                            <div class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">인정경력</div>
-                            <div class="text-xs font-semibold text-slate-500">${item.y}년 ${item.m}월 ${item.d}일</div>
-                        </div>
-                        <div class="text-right border-l border-slate-100 pl-6">
-                            <div class="text-[9px] text-blue-400 font-bold uppercase tracking-tighter">환산경력</div>
-                            <div class="text-sm font-black text-slate-800">${item.wy}년 ${item.wm}월 ${item.wd}일</div>
-                        </div>
-                    </div>
-
-                    <button onclick="removeEntry(${item.id})" class="text-slate-200 hover:text-red-400 transition-colors p-2 ml-2"><i class="fas fa-trash-alt"></i></button>
                 </div>
-            `).reverse().join('');
+                <button onclick="removeCareer(${c.id})" class="ml-4 p-2 text-gray-300 hover:text-red-500 transition-all shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>
+                </button>`;
+            listContainer.appendChild(div);
+        });
 
-            let totalDays = 0;
-            history.forEach(i => totalDays += (i.wy * 360) + (i.wm * 30) + i.wd);
-            updateTotalDisplay(Math.floor(totalDays/360), Math.floor((totalDays%360)/30), totalDays%30);
-        }
-
-        function removeEntry(id) { 
-            history = history.filter(i => i.id !== id); 
-            render(); 
-        }
-
-        function clearAll() { 
-            if(confirm("정말로 모든 데이터를 삭제하시겠습니까?")) { 
-                history = []; 
-                updateTotalDisplay(0, 0, 0);
-                render();
-                showToast("모든 목록이 삭제되었습니다.");
-            } 
-        }
-
-        function updateTotalDisplay(y, m, d) {
-            document.getElementById('resY').innerText = y;
-            document.getElementById('resM').innerText = m;
-            document.getElementById('resD').innerText = d;
-        }
-
-        function downloadExcel() {
-            if(history.length === 0) {
-                showToast("내보낼 데이터가 없습니다.");
-                return;
-            }
-            const data = history.map(i => ({
-                "경력구분": i.name,
-                "환산율": (i.rate * 100) + "%",
-                "시작일": i.start.toLocaleDateString(),
-                "종료일": i.end.toLocaleDateString(),
-                "인정경력(100%)": `${i.y}년 ${i.m}월 ${i.d}일`,
-                "환산경력(결과)": `${i.wy}년 ${i.wm}월 ${i.wd}일`
-            }));
-            const ws = XLSX.utils.json_to_sheet(data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "CareerHistory");
-            XLSX.writeFile(wb, `경력환산기_결과_${new Date().getTime()}.xlsx`);
-        }
-    </script>
+        tM += Math.floor(tD / 30); tD %= 30;
+        tY += Math.floor(tM / 12); tM %= 12;
+        totalDisplay.innerHTML = `${tY}<span class="unit">년</span>${tM}<span class="unit">월</span>${tD}<span class="unit">일</span>`;
+        listCount.innerText = `총 ${careers.length}건`;
+    }
+}
+</script>
 </body>
 </html>
