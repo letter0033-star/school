@@ -30,7 +30,7 @@
             margin-left: 0.25rem; /* 숫자와 단위 사이 간격 */
             margin-right: 1.25rem; /* 단위와 다음 숫자 사이 간격 */
             font-weight: 600;
-            color: #64748b; /* 연한 배경에 맞춰 차분한 슬레이트 그레이로 변경 */
+            color: #64748b; 
             vertical-align: middle;
         }
         /* 마지막 단위는 오른쪽 마진 제거 */
@@ -48,7 +48,7 @@
                 <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-gray-100">
                     <header class="mb-8">
                         <div class="inline-block bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-3">
-                            Career Calculator v3.7
+                            Career Calculator v3.7 Final
                         </div>
                         
                         <div class="flex items-start gap-4">
@@ -155,7 +155,7 @@
             <!-- Right Side: Total Box & Info -->
             <div class="lg:col-span-1">
                 <div class="sticky-side space-y-6">
-                    <!-- Total Result Card - 부드러운 연한 하늘색(bg-sky-50)으로 변경 -->
+                    <!-- Total Result Card -->
                     <div class="bg-sky-50 rounded-3xl p-5 text-sky-900 border border-sky-100 shadow-sm relative overflow-hidden min-h-[175px] flex flex-col justify-center">
                         <div class="relative z-10 text-center">
                             <p class="text-sky-600/70 text-lg font-black uppercase tracking-widest mb-4">최종 합산 결과</p>
@@ -163,7 +163,6 @@
                                 0<span class="unit">년</span>0<span class="unit">월</span>0<span class="unit">일</span>
                             </div>
                         </div>
-                        <!-- 장식용 배경 요소 (매우 연하게) -->
                         <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-sky-200/30 rounded-full"></div>
                         <div class="absolute -left-2 -top-2 w-14 h-14 bg-sky-200/20 rounded-full"></div>
                     </div>
@@ -190,9 +189,13 @@
                                 유의사항
                             </div>
                             <p class="mb-3 text-gray-400">
-                                경력 환산기는 <span class="text-gray-600 font-semibold">제미나이3</span>와 <span class="text-gray-600 font-semibold">ChatGPT5.3</span>의 바이브코딩으로 제작되었으며, 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다. 사용자는 반드시 입력한 경력의 결과 값이 맞는지 검증이 필요합니다.
+                                경력 환산기는 <span class="text-gray-600 font-semibold">Gemini 2.5</span>와 <span class="text-gray-600 font-semibold">ChatGPT</span>의 바이브코딩으로 제작되었으며, 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다. 사용자는 반드시 입력한 경력의 결과 값이 맞는지 검증이 필요합니다.
                             </p>
-                            <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-1.5 text-[10px]">
+                                <span class="font-bold text-gray-700">업데이트:</span>
+                                <span class="text-gray-500">2026.03.22 (v3.7 Final)</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 mt-1">
                                 <span class="font-bold text-gray-700">오류 신고:</span>
                                 <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline decoration-blue-200">letter0033@gmail.com</a>
                             </div>
@@ -263,7 +266,7 @@ function calculateDiff(start, end, ratioPercent) {
     const sY = start.getFullYear(), sM = start.getMonth(), sD = start.getDate();
     const eY = end.getFullYear(), eM = end.getMonth(), eD = end.getDate();
 
-    let years = 0, months = 0, days = 0;
+    let months = 0, days = 0;
     const sLast = isLastDayOfMonth(start);
     const eLast = isLastDayOfMonth(end);
     const monthDiff = (eY * 12 + eM) - (sY * 12 + sM);
@@ -272,6 +275,7 @@ function calculateDiff(start, end, ratioPercent) {
         months = monthDiff + 1;
     } else if (sLast && eLast && monthDiff === 1) {
         months = 1;
+        days = (eD === sD) ? 1 : 0;
     } else {
         months = monthDiff;
         days = eD - sD + 1;
@@ -294,10 +298,10 @@ function calculateDiff(start, end, ratioPercent) {
     const rm = Math.floor(months * (ratioPercent / 100)) % 12;
     const rd = Math.floor(days * (ratioPercent / 100));
 
-    years = Math.floor(months / 12);
-    months = months % 12;
+    let years = Math.floor(months / 12);
+    let remMonths = months % 12;
 
-    return { y: years, m: months, d: days, ry, rm, rd, ratioPercent };
+    return { y: years, m: remMonths, d: days, ry, rm, rd, ratioPercent };
 }
 
 function addCareer() {
@@ -336,7 +340,6 @@ function clearAllCareers() {
     updateUI();
 }
 
-// 엑셀 다운로드 기능 (CSV 형식)
 function downloadExcel() {
     if (careers.length === 0) return;
 
@@ -347,19 +350,14 @@ function downloadExcel() {
         csvContent += `${index + 1},${c.startVal},${c.endVal},${c.ratioPercent},${c.y},${c.m},${c.d},${c.ry},${c.rm},${c.rd}\n`;
     });
 
-    // 합산 행 추가 - 화면의 최종 합산 방식과 동일하게 적용
     let tY = 0, tM = 0, tD = 0;
     careers.forEach(c => { 
-        tY += c.ry; 
-        tM += c.rm; 
-        tD += c.rd; 
+        tY += c.ry; tM += c.rm; tD += c.rd; 
     });
     
-    // 잔여 일수 합산 후 30일마다 1개월로 환산
+    // 30일마다 1개월 환산 (UI와 동일 로직)
     tM += Math.floor(tD / 30); 
     tD %= 30;
-    
-    // 월 합산 후 12개월마다 1년으로 환산
     tY += Math.floor(tM / 12); 
     tM %= 12;
 
