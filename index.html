@@ -27,24 +27,26 @@
         /* 단위 텍스트 크기 및 간격 조절 */
         .unit {
             font-size: 0.45em;
-            margin-left: 0.25rem; /* 숫자와 단위 사이 간격 */
-            margin-right: 1.25rem; /* 단위와 다음 숫자 사이 간격 */
+            margin-left: 0.25rem; 
+            margin-right: 1.25rem; 
             font-weight: 600;
             color: #64748b; 
             vertical-align: middle;
         }
-        /* 마지막 단위는 오른쪽 마진 제거 */
         .unit:last-child {
             margin-right: 0;
         }
     </style>
 </head>
 <body class="min-h-screen py-8 px-4 sm:py-12">
-    <div class="max-w-4xl mx-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- 전체 컨테이너 너비를 약간 확장 (max-w-4xl -> max-w-5xl) -->
+    <div class="max-w-5xl mx-auto">
+        <!-- 그리드 비율 조정: lg:grid-cols-5 (왼쪽 3 : 오른쪽 2) -->
+        <!-- 오른쪽이 기존 33%에서 40%로 약간 늘어남 -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
             
-            <!-- Left Side: Input & List -->
-            <div class="lg:col-span-2 space-y-6">
+            <!-- Left Side: Input & List (3/5 차지) -->
+            <div class="lg:col-span-3 space-y-6">
                 <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-gray-100">
                     <header class="mb-8">
                         <div class="inline-block bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-3">
@@ -52,16 +54,15 @@
                         </div>
                         
                         <div class="flex items-start gap-4">
-                            <!-- 계산기 아이콘 -->
                             <div class="shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
                             </div>
                             
                             <div class="flex flex-col">
                                 <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                                    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+                                    <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">
                                         교육공무원 경력 환산기
                                     </h1>
                                     <p class="text-gray-400 text-sm font-bold tracking-tight">
@@ -77,7 +78,6 @@
 
                     <!-- Input Group -->
                     <div class="space-y-6 mb-10">
-                        <!-- Ratio Selection -->
                         <div class="space-y-3">
                             <label class="text-sm font-bold text-gray-700 ml-1 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-green-500 rounded-full"></span>환산율 설정
@@ -95,7 +95,6 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Start Date -->
                             <div class="space-y-3">
                                 <label class="text-sm font-bold text-gray-700 ml-1 flex items-center gap-2">
                                     <span class="w-2 h-2 bg-blue-500 rounded-full"></span>시작 날짜
@@ -107,7 +106,6 @@
                                 </div>
                             </div>
 
-                            <!-- End Date -->
                             <div class="space-y-3">
                                 <label class="text-sm font-bold text-gray-700 ml-1 flex items-center gap-2">
                                     <span class="w-2 h-2 bg-red-400 rounded-full"></span>종료 날짜
@@ -135,7 +133,6 @@
                             <span id="listCount" class="text-xs font-medium text-gray-400">총 0건</span>
                         </div>
                         <div class="flex items-center gap-4">
-                            <!-- Excel Download Button -->
                             <button id="downloadBtn" onclick="downloadExcel()" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1 opacity-0 pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -152,22 +149,22 @@
                 </div>
             </div>
 
-            <!-- Right Side: Total Box & Info -->
-            <div class="lg:col-span-1">
+            <!-- Right Side: Total Box & Info (2/5 차지) -->
+            <div class="lg:col-span-2">
                 <div class="sticky-side space-y-6">
                     <!-- Total Result Card -->
-                    <div class="bg-sky-50 rounded-3xl p-5 text-sky-900 border border-sky-100 shadow-sm relative overflow-hidden min-h-[175px] flex flex-col justify-center">
+                    <div class="bg-sky-50 rounded-3xl p-6 text-sky-900 border border-sky-100 shadow-sm relative overflow-hidden min-h-[175px] flex flex-col justify-center">
                         <div class="relative z-10 text-center">
                             <p class="text-sky-600/70 text-lg font-black uppercase tracking-widest mb-4">최종 합산 결과</p>
                             <div id="totalResult" class="text-3xl sm:text-4xl font-black flex items-center justify-center flex-wrap leading-tight tracking-tighter text-sky-950">
                                 0<span class="unit">년</span>0<span class="unit">월</span>0<span class="unit">일</span>
                             </div>
                         </div>
-                        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-sky-200/30 rounded-full"></div>
-                        <div class="absolute -left-2 -top-2 w-14 h-14 bg-sky-200/20 rounded-full"></div>
+                        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-sky-200/30 rounded-full"></div>
+                        <div class="absolute -left-2 -top-2 w-16 h-16 bg-sky-200/20 rounded-full"></div>
                     </div>
 
-                    <!-- Footer Info -->
+                    <!-- Footer Info (최종 합산 결과 아래 배치 유지) -->
                     <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-100 text-[11px] leading-relaxed text-gray-500">
                         <div class="flex items-center gap-2 mb-3 text-gray-800 font-bold text-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -188,16 +185,26 @@
                                 </svg>
                                 유의사항
                             </div>
-                            <p class="mb-3 text-gray-400">
-                                경력 환산기는 <span class="text-gray-600 font-semibold">Gemini 2.5</span>와 <span class="text-gray-600 font-semibold">ChatGPT</span>의 바이브코딩으로 제작되었으며, 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다. 사용자는 반드시 입력한 경력의 결과 값이 맞는지 검증이 필요합니다.
-                            </p>
-                            <div class="flex items-center gap-1.5 text-[10px]">
-                                <span class="font-bold text-gray-700">업데이트:</span>
-                                <span class="text-gray-500">2026.03.22 (v3.7 Final)</span>
+                            <div class="space-y-1.5">
+                                <p class="text-gray-500">
+                                    ○ 경력 환산기는 <span class="text-gray-700 font-semibold">Gemini 2.5</span>와 <span class="text-gray-700 font-semibold">ChatGPT</span>의 바이브코딩으로 제작되었습니다.
+                                </p>
+                                <p class="text-gray-500">
+                                    ○ 임시 사용기간 동안 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다. 사용자는 반드시 입력한 경력의 결과 값이 맞는지 검증이 필요합니다.
+                                </p>
+                                <p class="text-gray-600 font-bold">
+                                    ○ 임시 사용기간: 2026. 3. 23. ~ 2026. 4. 30.
+                                </p>
                             </div>
-                            <div class="flex items-center gap-1.5 mt-1">
-                                <span class="font-bold text-gray-700">오류 신고:</span>
-                                <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline decoration-blue-200">letter0033@gmail.com</a>
+                            <div class="flex flex-col gap-1 mt-4">
+                                <div class="flex items-center gap-1.5 text-[10px]">
+                                    <span class="font-bold text-gray-700">업데이트:</span>
+                                    <span class="text-gray-500">2026.03.22 (v3.7 Final)</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[10px]">
+                                    <span class="font-bold text-gray-700">오류 신고:</span>
+                                    <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline decoration-blue-200">letter0033@gmail.com</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -355,7 +362,6 @@ function downloadExcel() {
         tY += c.ry; tM += c.rm; tD += c.rd; 
     });
     
-    // 30일마다 1개월 환산 (UI와 동일 로직)
     tM += Math.floor(tD / 30); 
     tD %= 30;
     tY += Math.floor(tM / 12); 
