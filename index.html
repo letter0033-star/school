@@ -39,12 +39,10 @@
     </style>
 </head>
 <body class="min-h-screen py-8 px-4 sm:py-12">
-    <!-- 전체 컨테이너 너비를 확장 (max-w-6xl) -->
     <div class="max-w-6xl mx-auto">
-        <!-- 그리드 비율 조정: lg:grid-cols-12 (왼쪽 7 : 오른쪽 5) 로 오른쪽 비중 확대 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Left Side: Input & List (7/12 차지) -->
+            <!-- Left Side: Input & List -->
             <div class="lg:col-span-7 space-y-6">
                 <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-gray-100">
                     <header class="mb-8">
@@ -148,7 +146,7 @@
                 </div>
             </div>
 
-            <!-- Right Side: Total Box & Info (5/12 차지 - 충분한 너비 확보) -->
+            <!-- Right Side: Total Box & Info -->
             <div class="lg:col-span-5">
                 <div class="sticky-side space-y-6">
                     <!-- Total Result Card -->
@@ -189,7 +187,8 @@
                                     ○ 경력 환산기는 <span class="text-gray-700 font-semibold">Gemini-3</span>와 <span class="text-gray-700 font-semibold">ChatGPT-5.3</span>의 바이브코딩으로 제작되었습니다.
                                 </p>
                                 <p class="text-gray-500">
-                                    ○ 임시 사용기간 동안 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다. 사용자는 반드시 입력한 경력의 결과 값이 맞는지 검증이 필요합니다.
+                                    <span class="inline-block w-full">○ 임시 사용기간 동안 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다.</span>
+                                    <span class="inline-block w-full" style="padding-left: 1.15em;">사용자는 반드시 입력한 경력의 결괏값이 맞는지 검증이 필요합니다.</span>
                                 </p>
                                 <p class="text-gray-600 font-bold">
                                     ○ 임시 사용기간: 2026. 3. 23. ~ 2026. 4. 30.
@@ -300,14 +299,13 @@ function calculateDiff(start, end, ratioPercent) {
         }
     }
 
-    const ry = Math.floor(Math.floor(months * (ratioPercent / 100)) / 12);
-    const rm = Math.floor(months * (ratioPercent / 100)) % 12;
-    const rd = Math.floor(days * (ratioPercent / 100));
+    const totalDays = months * 30 + days;
+    const convertedDays = Math.floor(totalDays * (ratioPercent / 100));
+    const ry = Math.floor(convertedDays / 360);
+    const rm = Math.floor((convertedDays % 360) / 30);
+    const rd = convertedDays % 30;
 
-    let years = Math.floor(months / 12);
-    let remMonths = months % 12;
-
-    return { y: years, m: remMonths, d: days, ry, rm, rd, ratioPercent };
+    return { y: Math.floor(months / 12), m: months % 12, d: days, ry, rm, rd, ratioPercent };
 }
 
 function addCareer() {
@@ -348,38 +346,20 @@ function clearAllCareers() {
 
 function downloadExcel() {
     if (careers.length === 0) return;
-
-    let csvContent = "\uFEFF"; // UTF-8 BOM
-    csvContent += "순번,시작일,종료일,환산율(%),인정(년),인정(월),인정(일),환산(년),환산(월),환산(일)\n";
-
+    let csvContent = "\uFEFF순번,시작일,종료일,환산율(%),인정(년),인정(월),인정(일),환산(년),환산(월),환산(일)\n";
     careers.forEach((c, index) => {
         csvContent += `${index + 1},${c.startVal},${c.endVal},${c.ratioPercent},${c.y},${c.m},${c.d},${c.ry},${c.rm},${c.rd}\n`;
     });
-
     let tY = 0, tM = 0, tD = 0;
-    careers.forEach(c => { 
-        tY += c.ry; tM += c.rm; tD += c.rd; 
-    });
-    
-    tM += Math.floor(tD / 30); 
-    tD %= 30;
-    tY += Math.floor(tM / 12); 
-    tM %= 12;
-
-    csvContent += `\n,,,,,최종합산,,,,\n`;
-    csvContent += `,,,,,${tY}년 ${tM}월 ${tD}일,,,,\n`;
-
+    careers.forEach(c => { tY += c.ry; tM += c.rm; tD += c.rd; });
+    tM += Math.floor(tD / 30); tD %= 30;
+    tY += Math.floor(tM / 12); tM %= 12;
+    csvContent += `\n,,,,,최종합산,,,,\n,,,,,${tY}년 ${tM}월 ${tD}일,,,,\n`;
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
-    
-    link.setAttribute("href", url);
-    link.setAttribute("download", `경력환산결과_${dateStr}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
+    link.setAttribute("href", URL.createObjectURL(blob));
+    link.setAttribute("download", `경력환산결과_${new Date().toISOString().slice(0,10).replace(/-/g, '')}.csv`);
     link.click();
-    document.body.removeChild(link);
 }
 
 function updateUI() {
@@ -394,20 +374,15 @@ function updateUI() {
     if (careers.length === 0) {
         clearAllBtn.classList.add('opacity-0', 'pointer-events-none');
         downloadBtn.classList.add('opacity-0', 'pointer-events-none');
-        const emptyDiv = document.createElement('div');
-        emptyDiv.className = "text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100";
-        emptyDiv.innerHTML = '<p class="text-gray-400 text-sm italic">현재 등록된 경력이 없습니다.</p>';
-        listContainer.appendChild(emptyDiv);
+        listContainer.innerHTML = '<div class="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100"><p class="text-gray-400 text-sm italic">현재 등록된 경력이 없습니다.</p></div>';
         totalDisplay.innerHTML = `0<span class="unit">년</span>0<span class="unit">월</span>0<span class="unit">일</span>`;
         listCount.innerText = `총 0건`;
     } else {
         clearAllBtn.classList.remove('opacity-0', 'pointer-events-none');
         downloadBtn.classList.remove('opacity-0', 'pointer-events-none');
-        
         let tY = 0, tM = 0, tD = 0;
         careers.forEach((c, index) => {
             tY += c.ry; tM += c.rm; tD += c.rd;
-            
             const div = document.createElement('div');
             div.className = "flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all group border border-transparent hover:border-gray-200";
             div.innerHTML = `
@@ -436,7 +411,6 @@ function updateUI() {
                 </button>`;
             listContainer.appendChild(div);
         });
-
         tM += Math.floor(tD / 30); tD %= 30;
         tY += Math.floor(tM / 12); tM %= 12;
         totalDisplay.innerHTML = `${tY}<span class="unit">년</span>${tM}<span class="unit">월</span>${tD}<span class="unit">일</span>`;
