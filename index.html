@@ -39,14 +39,13 @@
     </style>
 </head>
 <body class="min-h-screen py-8 px-4 sm:py-12">
-    <!-- 전체 컨테이너 너비를 약간 확장 (max-w-4xl -> max-w-5xl) -->
-    <div class="max-w-5xl mx-auto">
-        <!-- 그리드 비율 조정: lg:grid-cols-5 (왼쪽 3 : 오른쪽 2) -->
-        <!-- 오른쪽이 기존 33%에서 40%로 약간 늘어남 -->
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- 전체 컨테이너 너비를 확장 (max-w-6xl) -->
+    <div class="max-w-6xl mx-auto">
+        <!-- 그리드 비율 조정: lg:grid-cols-12 (왼쪽 7 : 오른쪽 5) 로 오른쪽 비중 확대 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Left Side: Input & List (3/5 차지) -->
-            <div class="lg:col-span-3 space-y-6">
+            <!-- Left Side: Input & List (7/12 차지) -->
+            <div class="lg:col-span-7 space-y-6">
                 <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-gray-100">
                     <header class="mb-8">
                         <div class="inline-block bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-3">
@@ -149,14 +148,14 @@
                 </div>
             </div>
 
-            <!-- Right Side: Total Box & Info (2/5 차지) -->
-            <div class="lg:col-span-2">
+            <!-- Right Side: Total Box & Info (5/12 차지 - 충분한 너비 확보) -->
+            <div class="lg:col-span-5">
                 <div class="sticky-side space-y-6">
                     <!-- Total Result Card -->
                     <div class="bg-sky-50 rounded-3xl p-6 text-sky-900 border border-sky-100 shadow-sm relative overflow-hidden min-h-[175px] flex flex-col justify-center">
                         <div class="relative z-10 text-center">
                             <p class="text-sky-600/70 text-lg font-black uppercase tracking-widest mb-4">최종 합산 결과</p>
-                            <div id="totalResult" class="text-3xl sm:text-4xl font-black flex items-center justify-center flex-wrap leading-tight tracking-tighter text-sky-950">
+                            <div id="totalResult" class="text-3xl sm:text-4xl lg:text-5xl font-black flex items-center justify-center flex-wrap leading-tight tracking-tighter text-sky-950">
                                 0<span class="unit">년</span>0<span class="unit">월</span>0<span class="unit">일</span>
                             </div>
                         </div>
@@ -164,7 +163,7 @@
                         <div class="absolute -left-2 -top-2 w-16 h-16 bg-sky-200/20 rounded-full"></div>
                     </div>
 
-                    <!-- Footer Info (최종 합산 결과 아래 배치 유지) -->
+                    <!-- Footer Info -->
                     <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-100 text-[11px] leading-relaxed text-gray-500">
                         <div class="flex items-center gap-2 mb-3 text-gray-800 font-bold text-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -186,8 +185,8 @@
                                 유의사항
                             </div>
                             <div class="space-y-1.5">
-                                <p class="text-gray-500">
-                                    ○ 경력 환산기는 <span class="text-gray-700 font-semibold">Gemini 2.5</span>와 <span class="text-gray-700 font-semibold">ChatGPT</span>의 바이브코딩으로 제작되었습니다.
+                                <p class="text-gray-500 whitespace-nowrap">
+                                    ○ 경력 환산기는 <span class="text-gray-700 font-semibold">Gemini-3</span>와 <span class="text-gray-700 font-semibold">ChatGPT-5.3</span>의 바이브코딩으로 제작되었습니다.
                                 </p>
                                 <p class="text-gray-500">
                                     ○ 임시 사용기간 동안 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다. 사용자는 반드시 입력한 경력의 결과 값이 맞는지 검증이 필요합니다.
