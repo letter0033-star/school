@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교육공무원 역에 의한 경력 환산기 v3.7</title>
+    <title>교육공무원 역에 의한 경력 환산기 v3.9.3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
@@ -21,10 +21,9 @@
         @media (min-width: 1024px) {
             .sticky-side {
                 position: sticky;
-                top: 3rem;
+                top: 2rem;
             }
         }
-        /* 단위 텍스트 크기 및 간격 조절 */
         .unit {
             font-size: 0.45em;
             margin-left: 0.25rem; 
@@ -36,18 +35,35 @@
         .unit:last-child {
             margin-right: 0;
         }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+            animation: slideDown 0.3s ease-out forwards;
+        }
     </style>
 </head>
-<body class="min-h-screen py-8 px-4 sm:py-12">
+<body class="min-h-screen py-8 px-4 sm:py-12 relative">
+    <!-- 커스텀 알림 UI -->
+    <div id="alertBox" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden pointer-events-none">
+        <div class="bg-red-600 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-slide-down">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <span id="alertMessage" class="font-bold text-sm text-center">기존 경력과 하루 이상 겹치는 날이 있습니다.</span>
+        </div>
+    </div>
+
     <div class="max-w-6xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Left Side: Input & List -->
             <div class="lg:col-span-7 space-y-6">
                 <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-gray-100">
                     <header class="mb-8">
                         <div class="inline-block bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-3">
-                            Career Calculator v3.7 Final
+                            Career Calculator v3.9.3
                         </div>
                         
                         <div class="flex items-start gap-4">
@@ -146,11 +162,9 @@
                 </div>
             </div>
 
-            <!-- Right Side: Total Box & Info -->
             <div class="lg:col-span-5">
                 <div class="sticky-side space-y-6">
-                    <!-- Total Result Card -->
-                    <div class="bg-sky-50 rounded-3xl p-6 text-sky-900 border border-sky-100 shadow-sm relative overflow-hidden min-h-[175px] flex flex-col justify-center">
+                    <div class="bg-sky-50 rounded-3xl p-6 text-sky-900 border border-sky-100 shadow-sm relative overflow-hidden min-h-[160px] flex flex-col justify-center">
                         <div class="relative z-10 text-center">
                             <p class="text-sky-600/70 text-lg font-black uppercase tracking-widest mb-4">최종 합산 결과</p>
                             <div id="totalResult" class="text-3xl sm:text-4xl lg:text-5xl font-black flex items-center justify-center flex-wrap leading-tight tracking-tighter text-sky-950">
@@ -161,7 +175,7 @@
                         <div class="absolute -left-2 -top-2 w-16 h-16 bg-sky-200/20 rounded-full"></div>
                     </div>
 
-                    <!-- Footer Info -->
+                    <!-- 유의사항 섹션 -->
                     <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-100 text-[11px] leading-relaxed text-gray-500">
                         <div class="flex items-center gap-2 mb-3 text-gray-800 font-bold text-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,10 +183,11 @@
                             </svg>
                             계산 안내 사항
                         </div>
-                        <ul class="space-y-2.5 list-none mb-6">
+                        <ul class="space-y-2 list-none mb-6">
                             <li><span class="text-blue-500 font-bold">1. 역(曆)에 의한 방법</span><br>민법 제160조를 준수하여 계산합니다.</li>
                             <li><span class="text-green-500 font-bold">2. 환산율 적용</span><br>각 기간에 환산율을 곱한 뒤 소수점 이하의 일수는 버립니다.</li>
                             <li><span class="text-orange-500 font-bold">3. 잔여 일수 합산</span><br>모든 환산 기간의 남은 일수를 합산한 뒤 30일마다 1개월로 환산합니다.</li>
+                            <li><span class="text-indigo-500 font-bold">4. 실교육경력과의 차이</span><br>본 계산기는 <span class="font-semibold text-gray-700">공무원보수규정에 따른 호봉 계산</span> 참고용이며, 실교육경력 계산 시 제외되는 경력은 별도로 확인해야 합니다.</li>
                         </ul>
 
                         <div class="pt-4 border-t border-gray-100">
@@ -182,27 +197,23 @@
                                 </svg>
                                 유의사항
                             </div>
-                            <div class="space-y-1.5">
-                                <p class="text-gray-500 whitespace-nowrap">
+                            <div class="space-y-2">
+                                <p class="text-gray-500">
                                     ○ 경력 환산기는 <span class="text-gray-700 font-semibold">Gemini-3</span>와 <span class="text-gray-700 font-semibold">ChatGPT-5.3</span>의 바이브코딩으로 제작되었습니다.
                                 </p>
+                                <div class="text-gray-500">
+                                    <p>○ 임시 사용기간 동안 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다.</p>
+                                    <p class="ml-[1.1rem]">사용자는 반드시 입력한 경력의 결괏값이 맞는지 검증이 필요합니다.</p>
+                                </div>
                                 <p class="text-gray-500">
-                                    <span class="inline-block w-full">○ 임시 사용기간 동안 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다.</span>
-                                    <span class="inline-block w-full" style="padding-left: 1.15em;">사용자는 반드시 입력한 경력의 결괏값이 맞는지 검증이 필요합니다.</span>
+                                    ○ <span class="font-bold">임시 사용기간:</span> 2026. 3. 23. ~ 2026. 4. 30.
                                 </p>
-                                <p class="text-gray-600 font-bold">
-                                    ○ 임시 사용기간: 2026. 3. 23. ~ 2026. 4. 30.
+                                <p class="text-gray-500">
+                                    ○ <span class="text-blue-500 font-bold">업데이트:</span> 2026.03.26 (v3.9.3) 경력 중복 체크 알고리즘 추가
                                 </p>
-                            </div>
-                            <div class="flex flex-col gap-1 mt-4">
-                                <div class="flex items-center gap-1.5 text-[10px]">
-                                    <span class="font-bold text-gray-700">업데이트:</span>
-                                    <span class="text-gray-500">2026.03.22 (v3.7 Final)</span>
-                                </div>
-                                <div class="flex items-center gap-1.5 text-[10px]">
-                                    <span class="font-bold text-gray-700">오류 신고:</span>
-                                    <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline decoration-blue-200">letter0033@gmail.com</a>
-                                </div>
+                                <p class="text-gray-400 font-medium">
+                                    ○ <span class="font-bold">오류 신고:</span> <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline">letter0033@gmail.com</a>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -213,6 +224,7 @@
 
 <script>
 let careers = [];
+let alertTimer;
 
 window.onload = function() {
     const currentYear = new Date().getFullYear();
@@ -243,6 +255,19 @@ window.onload = function() {
     updateDays('e');
     updateUI(); 
 };
+
+function showAlert(message) {
+    const box = document.getElementById('alertBox');
+    const msg = document.getElementById('alertMessage');
+    
+    msg.innerText = message;
+    box.classList.remove('hidden');
+    
+    if (alertTimer) clearTimeout(alertTimer);
+    alertTimer = setTimeout(() => {
+        box.classList.add('hidden');
+    }, 4000);
+}
 
 function updateDays(prefix) {
     const year = document.getElementById(prefix + 'Year').value;
@@ -309,26 +334,43 @@ function calculateDiff(start, end, ratioPercent) {
 }
 
 function addCareer() {
-    const sY = document.getElementById('sYear').value;
-    const sM = document.getElementById('sMonth').value - 1;
-    const sD = document.getElementById('sDay').value;
-    const eY = document.getElementById('eYear').value;
-    const eM = document.getElementById('eMonth').value - 1;
-    const eD = document.getElementById('eDay').value;
+    const sY = parseInt(document.getElementById('sYear').value);
+    const sM = parseInt(document.getElementById('sMonth').value) - 1;
+    const sD = parseInt(document.getElementById('sDay').value);
+    const eY = parseInt(document.getElementById('eYear').value);
+    const eM = parseInt(document.getElementById('eMonth').value) - 1;
+    const eD = parseInt(document.getElementById('eDay').value);
     const ratio = parseInt(document.getElementById('ratio').value);
 
-    const start = new Date(sY, sM, sD);
-    const end = new Date(eY, eM, eD);
+    const start = new Date(sY, sM, sD, 0, 0, 0, 0);
+    const end = new Date(eY, eM, eD, 0, 0, 0, 0);
 
     if (start > end) {
-        alert("종료일이 시작일보다 빠를 수 없습니다.");
+        showAlert("종료일이 시작일보다 빠를 수 없습니다.");
         return;
     }
 
-    const diff = calculateDiff(start, end, ratio);
-    const id = Date.now();
+    const startTime = start.getTime();
+    const endTime = end.getTime();
+
+    const hasOverlap = careers.some(c => {
+        const partsS = c.startVal.split('-').map(Number);
+        const partsE = c.endVal.split('-').map(Number);
+        const exS = new Date(partsS[0], partsS[1]-1, partsS[2], 0, 0, 0, 0).getTime();
+        const exE = new Date(partsE[0], partsE[1]-1, partsE[2], 0, 0, 0, 0).getTime();
+        return (startTime <= exE) && (endTime >= exS);
+    });
+
+    if (hasOverlap) {
+        showAlert("기존 경력과 하루 이상 겹치는 날이 있습니다.");
+        return;
+    }
+
     const startStr = `${sY}-${String(sM+1).padStart(2, '0')}-${String(sD).padStart(2, '0')}`;
     const endStr = `${eY}-${String(eM+1).padStart(2, '0')}-${String(eD).padStart(2, '0')}`;
+
+    const diff = calculateDiff(start, end, ratio);
+    const id = Date.now();
 
     careers.push({ id, startVal: startStr, endVal: endStr, ...diff });
     updateUI();
@@ -344,22 +386,52 @@ function clearAllCareers() {
     updateUI();
 }
 
+/** 엑셀 저장 로직 **/
 function downloadExcel() {
     if (careers.length === 0) return;
-    let csvContent = "\uFEFF순번,시작일,종료일,환산율(%),인정(년),인정(월),인정(일),환산(년),환산(월),환산(일)\n";
+
+    const headers = ["순번", "시작일", "종료일", "환산율(%)", "인정(년)", "인정(월)", "인정(일)", "환산(년)", "환산(월)", "환산(일)"];
+    let csvRows = [];
+    
+    csvRows.push(headers.join(","));
+
     careers.forEach((c, index) => {
-        csvContent += `${index + 1},${c.startVal},${c.endVal},${c.ratioPercent},${c.y},${c.m},${c.d},${c.ry},${c.rm},${c.rd}\n`;
+        const row = [
+            index + 1,
+            ` ${c.startVal} `, 
+            ` ${c.endVal} `,
+            c.ratioPercent,
+            c.y,
+            c.m,
+            c.d,
+            c.ry,
+            c.rm,
+            c.rd
+        ];
+        csvRows.push(row.join(","));
     });
+
     let tY = 0, tM = 0, tD = 0;
     careers.forEach(c => { tY += c.ry; tM += c.rm; tD += c.rd; });
     tM += Math.floor(tD / 30); tD %= 30;
     tY += Math.floor(tM / 12); tM %= 12;
-    csvContent += `\n,,,,,최종합산,,,,\n,,,,,${tY}년 ${tM}월 ${tD}일,,,,\n`;
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+    csvRows.push(""); 
+    csvRows.push(",,,,최종 합산 결과,,,");
+    csvRows.push(`,,,,${tY}년,${tM}월,${tD}일`);
+
+    const BOM = "\uFEFF";
+    const csvString = BOM + csvRows.join("\n");
+    
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
-    link.setAttribute("href", URL.createObjectURL(blob));
-    link.setAttribute("download", `경력환산결과_${new Date().toISOString().slice(0,10).replace(/-/g, '')}.csv`);
+    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    
+    link.href = URL.createObjectURL(blob);
+    link.download = `경력환산_결과보고_${timestamp}.csv`;
     link.click();
+    
+    setTimeout(() => URL.revokeObjectURL(link.href), 100);
 }
 
 function updateUI() {
@@ -381,6 +453,8 @@ function updateUI() {
         clearAllBtn.classList.remove('opacity-0', 'pointer-events-none');
         downloadBtn.classList.remove('opacity-0', 'pointer-events-none');
         let tY = 0, tM = 0, tD = 0;
+        careers.sort((a,b) => new Date(a.startVal) - new Date(b.startVal)); 
+        
         careers.forEach((c, index) => {
             tY += c.ry; tM += c.rm; tD += c.rd;
             const div = document.createElement('div');
@@ -392,7 +466,7 @@ function updateUI() {
                         <span class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-[9px] font-bold">환산율 ${c.ratioPercent}%</span>
                     </div>
                     <div class="flex items-center justify-between flex-wrap gap-y-2">
-                        <span class="text-xs font-semibold text-gray-500 whitespace-nowrap">${c.startVal} ~ ${c.endVal}</span>
+                        <span class="text-xs font-semibold text-gray-800 whitespace-nowrap tracking-tight font-mono">${c.startVal} ~ ${c.endVal}</span>
                         <div class="flex items-center gap-2 text-sm ml-auto">
                             <div class="flex items-center gap-1.5 text-gray-500">
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">인정</span>
