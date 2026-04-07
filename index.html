@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교육공무원 역에 의한 경력 환산기 v3.9.3</title>
+    <title>교육공무원 역에 의한 경력 환산기 v4.0.0 (2026.04.07)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
@@ -63,7 +63,7 @@
                 <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-gray-100">
                     <header class="mb-8">
                         <div class="inline-block bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-3">
-                            Career Calculator v3.9.3
+                            Career Calculator v4.0.0 (2026.04.07)
                         </div>
                         
                         <div class="flex items-start gap-4">
@@ -89,7 +89,7 @@
                         </div>
                     </header>
 
-                    <!-- Input Group -->
+                    <!-- 입력 그룹 -->
                     <div class="space-y-6 mb-10">
                         <div class="space-y-3">
                             <label class="text-sm font-bold text-gray-700 ml-1 flex items-center gap-2">
@@ -139,7 +139,7 @@
                         </button>
                     </div>
 
-                    <!-- List Header -->
+                    <!-- 목록 헤더 -->
                     <div class="flex items-center justify-between mb-4 px-2">
                         <div class="flex items-center gap-3">
                             <h2 class="text-lg font-bold text-gray-800">추가된 목록</h2>
@@ -175,19 +175,31 @@
                         <div class="absolute -left-2 -top-2 w-16 h-16 bg-sky-200/20 rounded-full"></div>
                     </div>
 
-                    <!-- 유의사항 섹션 -->
+                    <!-- 안내 사항 섹션 -->
                     <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-100 text-[11px] leading-relaxed text-gray-500">
                         <div class="flex items-center gap-2 mb-3 text-gray-800 font-bold text-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            계산 안내 사항
+                            역에 의한 계산(민법 제160조) 적용
                         </div>
-                        <ul class="space-y-2 list-none mb-6">
-                            <li><span class="text-blue-500 font-bold">1. 역(曆)에 의한 방법</span><br>민법 제160조를 준수하여 계산합니다.</li>
-                            <li><span class="text-green-500 font-bold">2. 환산율 적용</span><br>각 기간에 환산율을 곱한 뒤 소수점 이하의 일수는 버립니다.</li>
-                            <li><span class="text-orange-500 font-bold">3. 잔여 일수 합산</span><br>모든 환산 기간의 남은 일수를 합산한 뒤 30일마다 1개월로 환산합니다.</li>
-                            <li><span class="text-indigo-500 font-bold">4. 실교육경력과의 차이</span><br>본 계산기는 <span class="font-semibold text-gray-700">공무원보수규정에 따른 호봉 계산</span> 참고용이며, 실교육경력 계산 시 제외되는 경력은 별도로 확인해야 합니다.</li>
+                        <ul class="space-y-3 list-none mb-6">
+                            <li>
+                                <span class="text-blue-500 font-bold block mb-0.5">1. 경과일 기준 계산</span>
+                                시작일부터 종료일까지 “실제 경과일수”를 기준으로 계산하며, 종료일은 포함하지 않습니다.
+                            </li>
+                            <li>
+                                <span class="text-green-500 font-bold block mb-0.5">2. 월·년 환산 기준</span>
+                                30일을 1개월, 12개월(360일)을 1년으로 환산합니다.
+                            </li>
+                            <li>
+                                <span class="text-orange-500 font-bold block mb-0.5">3. 달력 기준 자동 반영</span>
+                                월별 일수(28·29·30·31일)와 윤년은 실제 달력을 기준으로 자동 반영됩니다.
+                            </li>
+                            <li>
+                                <span class="text-indigo-500 font-bold block mb-0.5">4. 환산율 적용 원칙</span>
+                                총 경과일수에 환산율을 곱한 후, 소수점 이하 일수는 절사합니다.
+                            </li>
                         </ul>
 
                         <div class="pt-4 border-t border-gray-100">
@@ -197,22 +209,21 @@
                                 </svg>
                                 유의사항
                             </div>
-                            <div class="space-y-2">
+                            <div class="space-y-2.5">
                                 <p class="text-gray-500">
                                     ○ 경력 환산기는 <span class="text-gray-700 font-semibold">Gemini-3</span>와 <span class="text-gray-700 font-semibold">ChatGPT-5.3</span>의 바이브코딩으로 제작되었습니다.
                                 </p>
                                 <div class="text-gray-500">
-                                    <p>○ 임시 사용기간 동안 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다.</p>
-                                    <p class="ml-[1.1rem]">사용자는 반드시 입력한 경력의 결괏값이 맞는지 검증이 필요합니다.</p>
+                                    <p>○ 임시 사용기간 동안 모든 사례에 대하여 계산이 완벽하지 않을 수 있습니다. 사용자는 반드시 입력한 경력의 결괏값이 맞는지 검증이 필요합니다.</p>
                                 </div>
                                 <p class="text-gray-500">
                                     ○ <span class="font-bold">임시 사용기간:</span> 2026. 3. 23. ~ 2026. 4. 30.
                                 </p>
                                 <p class="text-gray-500">
-                                    ○ <span class="text-blue-500 font-bold">업데이트:</span> 2026.03.26 (v3.9.3) 경력 중복 체크 알고리즘 추가
+                                    ○ <span class="font-bold">업데이트:</span> 2026.04.07. (v4.0.0) 경과일 기준 계산로직 수정
                                 </p>
                                 <p class="text-gray-400 font-medium">
-                                    ○ <span class="font-bold">오류 신고:</span> <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline">letter0033@gmail.com</a>
+                                    ○ <span class="font-bold">오류 신고:</span> <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline transition-all font-bold">letter0033@gmail.com</a>
                                 </p>
                             </div>
                         </div>
@@ -227,16 +238,21 @@ let careers = [];
 let alertTimer;
 
 window.onload = function() {
-    const currentYear = new Date().getFullYear();
+    // 2026. 04. 07. 현재 시점 기준 설정
+    const currentYear = 2026;
+    const currentMonth = 4;
+    const currentDate = 7;
+
     const sYear = document.getElementById('sYear');
     const eYear = document.getElementById('eYear');
     const sMonth = document.getElementById('sMonth');
     const eMonth = document.getElementById('eMonth');
 
+    // 연도 옵션 생성
     for (let i = currentYear + 10; i >= currentYear - 60; i--) {
         const optS = new Option(`${i}년`, i);
         const optE = new Option(`${i}년`, i);
-        if (i === currentYear) {
+        if (i === 2026) {
             optS.selected = true;
             optE.selected = true;
         }
@@ -244,15 +260,26 @@ window.onload = function() {
         eYear.add(optE);
     }
 
+    // 월 옵션 생성
     for (let i = 1; i <= 12; i++) {
         const optS = new Option(`${i}월`, i);
         const optE = new Option(`${i}월`, i);
+        
+        // 시작 월: 1월, 종료 월: 4월
+        if (i === 1) optS.selected = true;
+        if (i === currentMonth) optE.selected = true;
+        
         sMonth.add(optS);
         eMonth.add(optE);
     }
 
     updateDays('s');
     updateDays('e');
+    
+    // 일 설정: 시작일 1일, 종료일 7일(현재일)
+    document.getElementById('sDay').value = 1;
+    document.getElementById('eDay').value = currentDate;
+    
     updateUI(); 
 };
 
@@ -285,52 +312,25 @@ function updateDays(prefix) {
     }
 }
 
-function isLastDayOfMonth(date) {
-    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-    return d.getDate() === lastDay;
-}
-
+/** 실제 경과일수를 360일/30일 기준으로 변환하여 계산 **/
 function calculateDiff(start, end, ratioPercent) {
     if (start > end) return { y: 0, m: 0, d: 0, ry: 0, rm: 0, rd: 0 };
-    const sY = start.getFullYear(), sM = start.getMonth(), sD = start.getDate();
-    const eY = end.getFullYear(), eM = end.getMonth(), eD = end.getDate();
 
-    let months = 0, days = 0;
-    const sLast = isLastDayOfMonth(start);
-    const eLast = isLastDayOfMonth(end);
-    const monthDiff = (eY * 12 + eM) - (sY * 12 + sM);
+    const diffTime = end.getTime() - start.getTime();
+    const totalDaysRaw = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const totalDays = totalDaysRaw;
 
-    if (sD === 1 && eLast) {
-        months = monthDiff + 1;
-    } else if (sLast && eLast && monthDiff === 1) {
-        months = 1;
-        days = (eD === sD) ? 1 : 0;
-    } else {
-        months = monthDiff;
-        days = eD - sD + 1;
-        if (days < 0) {
-            months--;
-            const prevMonthLastDay = new Date(eY, eM, 0).getDate();
-            days += prevMonthLastDay;
-        }
-        const currentMonthTotalDays = new Date(eY, eM + 1, 0).getDate();
-        if (currentMonthTotalDays === 31 && !(sLast && eLast)) {
-            if (days === 30) days = 29;
-        }
-        if (days >= currentMonthTotalDays) {
-            months += 1;
-            days = 0;
-        }
-    }
+    let y = Math.floor(totalDays / 360);
+    let m = Math.floor((totalDays % 360) / 30);
+    let d = totalDays % 30;
 
-    const totalDays = months * 30 + days;
     const convertedDays = Math.floor(totalDays * (ratioPercent / 100));
+
     const ry = Math.floor(convertedDays / 360);
     const rm = Math.floor((convertedDays % 360) / 30);
     const rd = convertedDays % 30;
 
-    return { y: Math.floor(months / 12), m: months % 12, d: days, ry, rm, rd, ratioPercent };
+    return { y, m, d, ry, rm, rd, ratioPercent };
 }
 
 function addCareer() {
@@ -358,7 +358,7 @@ function addCareer() {
         const partsE = c.endVal.split('-').map(Number);
         const exS = new Date(partsS[0], partsS[1]-1, partsS[2], 0, 0, 0, 0).getTime();
         const exE = new Date(partsE[0], partsE[1]-1, partsE[2], 0, 0, 0, 0).getTime();
-        return (startTime <= exE) && (endTime >= exS);
+        return (startTime < exE) && (endTime > exS);
     });
 
     if (hasOverlap) {
@@ -386,7 +386,7 @@ function clearAllCareers() {
     updateUI();
 }
 
-/** 엑셀 저장 로직 **/
+/** CSV 데이터 내보내기 **/
 function downloadExcel() {
     if (careers.length === 0) return;
 
