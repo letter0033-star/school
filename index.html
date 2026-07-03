@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교육공무원 역에 의한 경력 환산기 v3.9.3 (2026.03.26)</title>
+    <title>교육공무원 역에 의한 경력 환산기 v4.0 (2026.07.03)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
@@ -63,7 +63,7 @@
                 <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-gray-100">
                     <header class="mb-8">
                         <div class="inline-block bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-3">
-                            Career Calculator v3.9.3 (2026.03.26)
+                            Career Calculator v4.0 (2026.07.03)
                         </div>
                         
                         <div class="flex items-start gap-4">
@@ -92,9 +92,17 @@
                     <!-- Input Group -->
                     <div class="space-y-6 mb-10">
                         <div class="space-y-3">
-                            <label class="text-sm font-bold text-gray-700 ml-1 flex items-center gap-2">
-                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>환산율 설정
-                            </label>
+                            <div class="flex items-center justify-between ml-1">
+                                <label class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>환산율 설정
+                                </label>
+                                <a href="https://letter0033-star.github.io/chatbot/" target="_blank" class="inline-flex items-center gap-1 bg-blue-100 hover:bg-blue-200 text-blue-750 text-[11px] font-bold px-2.5 py-1 rounded-full transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    챗봇에 환산율 문의하기
+                                </a>
+                            </div>
                             <select id="ratio" class="w-full bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-green-500 p-3 transition-all text-gray-700 font-bold outline-none border text-sm">
                                 <option value="100">100% (정교사, 공무원 등)</option>
                                 <option value="90">90%</option>
@@ -105,6 +113,10 @@
                                 <option value="40">40%</option>
                                 <option value="30">30% (기타 민간 경력)</option>
                             </select>
+                            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mt-2 text-[11px] sm:text-xs text-blue-800 font-medium leading-relaxed flex gap-2.5">
+                                <span class="shrink-0 text-blue-500 text-sm">💡</span>
+                                <span>교육공무원(교원) 및 유사경력, 교원 외의 공무원 경력, 유사경력(강사, 연구경력, 국가 또는 지방자치단체 등에서의 근무경력, 그 밖의 경력)은 우측 상단 <a href="https://letter0033-star.github.io/chatbot/" target="_blank" class="text-blue-600 underline font-bold hover:text-blue-800 transition-colors">챗봇에 문의</a>하세요.</span>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -209,7 +221,7 @@
                                     ○ <span class="font-bold">임시 사용기간:</span> 2026. 3. 23. ~ 2026. 4. 30.
                                 </p>
                                 <p class="text-gray-500">
-                                    ○ <span class="text-blue-500 font-bold">최종 업데이트:</span> 2026.03.26 (v3.9.3)
+                                    ○ <span class="text-blue-500 font-bold">최종 업데이트:</span> 2026.07.03 (v4.0)
                                 </p>
                                 <p class="text-gray-400 font-medium">
                                     ○ <span class="font-bold">오류 신고:</span> <a href="mailto:letter0033@gmail.com" class="text-blue-500 hover:underline transition-all">letter0033@gmail.com</a>
