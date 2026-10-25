@@ -43,12 +43,33 @@
         .animate-slide-down {
             animation: slideDown 0.3s ease-out forwards;
         }
+
+        /* ===== 인쇄 / PDF 출력 ===== */
+        #printArea { display: none; }
+        @media print {
+            @page { size: A4 portrait; margin: 15mm 12mm; }
+            body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+            body > .max-w-6xl, #alertBox { display: none !important; }
+            #printArea { display: block !important; font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #000; }
+            #printArea .p-title { font-size: 17pt; font-weight: 800; text-align: center; margin: 0 0 4mm; letter-spacing: -0.02em; }
+            #printArea .p-meta { font-size: 9.5pt; color: #444; display: flex; justify-content: space-between; margin-bottom: 3mm; }
+            #printArea table { width: 100%; border-collapse: collapse; font-size: 10.5pt; }
+            #printArea th, #printArea td { border: 1px solid #888; padding: 5px 6px; text-align: center; }
+            #printArea thead { display: table-header-group; }
+            #printArea thead th { background: #eef2f7 !important; font-weight: 700;
+                -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #printArea tr { page-break-inside: avoid; }
+            #printArea .p-total { margin-top: 5mm; border: 2px solid #333; padding: 4mm;
+                text-align: center; font-size: 14pt; font-weight: 800; page-break-inside: avoid; }
+            #printArea .p-note { margin-top: 5mm; font-size: 8.5pt; color: #555; line-height: 1.7; }
+            #printArea .p-sign { margin-top: 10mm; font-size: 9.5pt; text-align: right; }
+        }
     </style>
 </head>
 <body class="min-h-screen py-8 px-4 sm:py-12 relative">
     <!-- 커스텀 알림 UI -->
     <div id="alertBox" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden pointer-events-none">
-        <div class="bg-red-600 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-slide-down">
+        <div id="alertCard" class="bg-red-600 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-slide-down">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
@@ -157,7 +178,26 @@
                             <h2 class="text-lg font-bold text-gray-800">추가된 목록</h2>
                             <span id="listCount" class="text-xs font-medium text-gray-400">총 0건</span>
                         </div>
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center flex-wrap justify-end gap-x-4 gap-y-2">
+                            <input type="file" id="loadInput" accept=".json,application/json" class="hidden" onchange="loadFile(this)">
+                            <button onclick="document.getElementById('loadInput').click()" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 transition-colors flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                                목록 불러오기
+                            </button>
+                            <button id="saveBtn" onclick="saveFile()" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 transition-colors flex items-center gap-1 opacity-0 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h10l4 4v12a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zm3 0v5h6V4M7 14h10v7H7v-7z" />
+                                </svg>
+                                목록 저장
+                            </button>
+                            <button id="printBtn" onclick="printResult()" class="text-xs font-bold text-gray-500 hover:text-gray-800 transition-colors flex items-center gap-1 opacity-0 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                </svg>
+                                인쇄 / PDF
+                            </button>
                             <button id="downloadBtn" onclick="downloadExcel()" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1 opacity-0 pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -231,6 +271,9 @@
         </div>
     </div>
 
+    <!-- 인쇄 / PDF 출력 영역 (화면에는 표시되지 않음) -->
+    <div id="printArea"></div>
+
 <script>
 let careers = [];
 let alertTimer;
@@ -265,10 +308,14 @@ window.onload = function() {
     updateUI(); 
 };
 
-function showAlert(message) {
+function showAlert(message, isSuccess) {
     const box = document.getElementById('alertBox');
     const msg = document.getElementById('alertMessage');
-    
+    const card = document.getElementById('alertCard');
+
+    card.classList.toggle('bg-red-600', !isSuccess);
+    card.classList.toggle('bg-emerald-600', !!isSuccess);
+
     msg.innerText = message;
     box.classList.remove('hidden');
     
@@ -436,24 +483,197 @@ function downloadExcel() {
     setTimeout(() => URL.revokeObjectURL(link.href), 100);
 }
 
+/** 목록 저장 / 불러오기 로직 (JSON 파일) **/
+function saveFile() {
+    if (careers.length === 0) return;
+
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const data = {
+        app: '경력 계산 및 경력 환산 프로그램',
+        version: 'v4.1',
+        savedAt: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`,
+        careers: careers.map(c => ({
+            startVal: c.startVal,
+            endVal: c.endVal,
+            ratioPercent: c.ratioPercent
+        }))
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `경력목록_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 100);
+
+    showAlert(`${careers.length}건을 파일로 저장했습니다.`, true);
+}
+
+function toDate(str) {
+    const [y, m, d] = str.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    // 2025-02-30 같은 실재하지 않는 날짜 차단
+    if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
+    return dt;
+}
+
+function parseSavedData(raw) {
+    let data;
+    try { data = JSON.parse(raw); }
+    catch (e) { throw new Error('저장 파일 형식이 아닙니다.'); }
+
+    const list = Array.isArray(data) ? data : data.careers;
+    if (!Array.isArray(list) || list.length === 0) throw new Error('파일에 경력 목록이 없습니다.');
+
+    const pattern = /^\d{4}-\d{2}-\d{2}$/;
+    const parsed = list.map((item, i) => {
+        const no = i + 1;
+        const sv = item.startVal, ev = item.endVal;
+        const ratio = Number(item.ratioPercent);
+
+        if (typeof sv !== 'string' || typeof ev !== 'string' || !pattern.test(sv) || !pattern.test(ev))
+            throw new Error(`${no}번째 항목의 날짜 형식이 올바르지 않습니다.`);
+
+        const s = toDate(sv), e = toDate(ev);
+        if (!s || !e) throw new Error(`${no}번째 항목에 존재하지 않는 날짜가 있습니다.`);
+        if (s > e) throw new Error(`${no}번째 항목의 종료일이 시작일보다 빠릅니다.`);
+        if (!Number.isFinite(ratio) || ratio < 1 || ratio > 100)
+            throw new Error(`${no}번째 항목의 환산율(${item.ratioPercent})이 올바르지 않습니다.`);
+
+        return { startVal: sv, endVal: ev, ratio, s, e };
+    });
+
+    const sorted = [...parsed].sort((a, b) => a.s - b.s);
+    for (let i = 1; i < sorted.length; i++) {
+        if (sorted[i].s <= sorted[i - 1].e)
+            throw new Error('파일 안에 기간이 서로 겹치는 경력이 있습니다.');
+    }
+    return parsed;
+}
+
+function loadFile(input) {
+    const file = input.files && input.files[0];
+    input.value = '';                       // 같은 파일을 다시 선택할 수 있도록 초기화
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        try {
+            const parsed = parseSavedData(reader.result);
+            const base = Date.now();
+            // 저장 파일에는 기간과 환산율만 담고, 결과는 현재 계산 로직으로 다시 계산
+            careers = parsed.map((item, i) => ({
+                id: base + i,
+                startVal: item.startVal,
+                endVal: item.endVal,
+                ...calculateDiff(item.s, item.e, item.ratio)
+            }));
+            updateUI();
+            showAlert(`${careers.length}건을 불러왔습니다. (기존 목록 대체)`, true);
+        } catch (err) {
+            showAlert('불러오기 실패 : ' + err.message);
+        }
+    };
+    reader.onerror = () => showAlert('파일을 읽을 수 없습니다.');
+    reader.readAsText(file, 'utf-8');
+}
+
+/** 인쇄 / PDF 저장 로직 **/
+function buildPrintArea() {
+    const area = document.getElementById('printArea');
+    if (careers.length === 0) { area.innerHTML = ''; return; }
+
+    let tY = 0, tM = 0, tD = 0;
+    careers.forEach(c => { tY += c.ry; tM += c.rm; tD += c.rd; });
+    tM += Math.floor(tD / 30); tD %= 30;
+    tY += Math.floor(tM / 12); tM %= 12;
+
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const stamp = `${now.getFullYear()}. ${pad(now.getMonth() + 1)}. ${pad(now.getDate())}.`;
+
+    const rows = careers.map((c, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${c.startVal}</td>
+                    <td>${c.endVal}</td>
+                    <td>${c.ratioPercent}%</td>
+                    <td>${c.y}년 ${c.m}월 ${c.d}일</td>
+                    <td><strong>${c.ry}년 ${c.rm}월 ${c.rd}일</strong></td>
+                </tr>`).join('');
+
+    area.innerHTML = `
+        <div class="p-title">경력 계산 및 경력 환산 결과</div>
+        <div class="p-meta">
+            <span>강릉시 유·초등 교(원)감 협의회</span>
+            <span>출력일 : ${stamp} / 총 ${careers.length}건</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:8%">순번</th>
+                    <th style="width:18%">시작일</th>
+                    <th style="width:18%">종료일</th>
+                    <th style="width:11%">환산율</th>
+                    <th style="width:22%">인정 경력</th>
+                    <th style="width:23%">환산 경력</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>
+        <div class="p-total">최종 합산 결과 &nbsp;&nbsp; ${tY}년 ${tM}월 ${tD}일</div>
+        <div class="p-note">
+            1. 기간 계산은 민법 제160조에 따른 역(曆)에 의한 계산이며, 시작일을 산입합니다.<br>
+            2. 각 기간에 환산율을 적용한 뒤 소수점 이하의 일수는 버립니다.<br>
+            3. 환산 기간의 잔여 일수를 합산한 뒤 30일마다 1개월, 12개월마다 1년으로 환산합니다.<br>
+            4. 본 결과는 공무원보수규정에 따른 호봉 계산 참고용이며, 실교육경력 계산 시 제외되는 경력은 별도로 확인해야 합니다.
+        </div>
+        <div class="p-sign">확인자 : _________________ (인)</div>`;
+}
+
+function printResult() {
+    if (careers.length === 0) return;
+    buildPrintArea();
+
+    const prevTitle = document.title;
+    const d = new Date();
+    const ts = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    document.title = `경력계산_환산결과_${ts}`;
+
+    const restore = () => {
+        document.title = prevTitle;
+        window.removeEventListener('afterprint', restore);
+    };
+    window.addEventListener('afterprint', restore);
+    setTimeout(() => window.print(), 50);
+    setTimeout(restore, 3000);
+}
+
 function updateUI() {
     const listContainer = document.getElementById('careerList');
     const totalDisplay = document.getElementById('totalResult');
     const listCount = document.getElementById('listCount');
     const clearAllBtn = document.getElementById('clearAllBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+    const printBtn = document.getElementById('printBtn');
+    const saveBtn = document.getElementById('saveBtn');
 
     listContainer.innerHTML = '';
     
     if (careers.length === 0) {
         clearAllBtn.classList.add('opacity-0', 'pointer-events-none');
         downloadBtn.classList.add('opacity-0', 'pointer-events-none');
+        printBtn.classList.add('opacity-0', 'pointer-events-none');
+        saveBtn.classList.add('opacity-0', 'pointer-events-none');
         listContainer.innerHTML = '<div class="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100"><p class="text-gray-400 text-sm italic">현재 등록된 경력이 없습니다.</p></div>';
         totalDisplay.innerHTML = `0<span class="unit">년</span>0<span class="unit">월</span>0<span class="unit">일</span>`;
         listCount.innerText = `총 0건`;
     } else {
         clearAllBtn.classList.remove('opacity-0', 'pointer-events-none');
         downloadBtn.classList.remove('opacity-0', 'pointer-events-none');
+        printBtn.classList.remove('opacity-0', 'pointer-events-none');
+        saveBtn.classList.remove('opacity-0', 'pointer-events-none');
         let tY = 0, tM = 0, tD = 0;
         careers.sort((a,b) => new Date(a.startVal) - new Date(b.startVal)); 
         
